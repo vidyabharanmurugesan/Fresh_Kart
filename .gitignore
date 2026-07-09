@@ -2,6 +2,7 @@
 .env
 .env.local
 .env.production
+*service-account*.json
 
 # ── Python ──
 __pycache__/

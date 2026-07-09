@@ -3,6 +3,7 @@ from flask_jwt_extended import create_access_token, get_jwt_identity
 from app.config.db import db
 from app.models.user_model import User
 from app.utils.password_hash import hash_password, verify_password
+from app.utils.google_sheets_service import log_login_event
 import os
 import urllib.request
 import urllib.parse
@@ -161,6 +162,14 @@ def signup():
         except Exception as mail_err:
             print(f"[ERROR] Failed to initiate seller license email sending: {mail_err}")
             
+    # Log signup event to Google Sheets
+    log_login_event(
+        event_type='signup',
+        status='success',
+        user=new_user,
+        ip_address=request.remote_addr,
+    )
+
     return jsonify({
         'message': 'Account created successfully',
         'token': access_token,
@@ -181,19 +190,51 @@ def login():
     # Find user
     user = User.query.filter_by(email=email).first()
     if not user:
+        # Log failed login — user not found
+        log_login_event(
+            event_type='login',
+            status='failed',
+            email=email,
+            ip_address=request.remote_addr,
+            failure_reason='User not found',
+        )
         return jsonify({'error': 'Invalid email or password'}), 401
     
     # Verify password
     if not verify_password(password, user.password_hash):
+        # Log failed login — wrong password
+        log_login_event(
+            event_type='login',
+            status='failed',
+            user=user,
+            ip_address=request.remote_addr,
+            failure_reason='Invalid password',
+        )
         return jsonify({'error': 'Invalid email or password'}), 401
     
     # Check if active
     if not user.is_active:
+        # Log failed login — deactivated account
+        log_login_event(
+            event_type='login',
+            status='failed',
+            user=user,
+            ip_address=request.remote_addr,
+            failure_reason='Account deactivated',
+        )
         return jsonify({'error': 'Your account has been deactivated. Contact support.'}), 403
     
     # Generate JWT token
     access_token = create_access_token(identity=str(user.id))
     
+    # Log successful login to Google Sheets
+    log_login_event(
+        event_type='login',
+        status='success',
+        user=user,
+        ip_address=request.remote_addr,
+    )
+
     return jsonify({
         'message': 'Login successful',
         'token': access_token,
@@ -286,6 +327,14 @@ def google_auth():
     # Generate JWT token
     access_token = create_access_token(identity=str(user.id))
     
+    # Log Google auth event to Google Sheets
+    log_login_event(
+        event_type='google_auth',
+        status='success',
+        user=user,
+        ip_address=request.remote_addr,
+    )
+
     return jsonify({
         'message': 'Google authentication successful',
         'token': access_token,

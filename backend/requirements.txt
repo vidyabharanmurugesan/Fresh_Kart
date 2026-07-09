@@ -10,3 +10,5 @@ reportlab
 gevent>=24.0.0
 gevent-websocket>=0.10.1
 waitress>=3.0.2
+gspread>=6.0.0
+google-auth>=2.0.0
