@@ -1,0 +1,17 @@
+/* ── Dashboard Layout ── */
+.dashboard-layout {
+  min-height: 100vh;
+  background: var(--color-gray-50);
+}
+
+.dashboard-main {
+  margin-top: var(--navbar-height);
+  padding: var(--space-6);
+  transition: margin-left var(--transition-base);
+}
+
+@media (min-width: 1024px) {
+  .dashboard-main {
+    margin-left: var(--sidebar-width);
+  }
+}

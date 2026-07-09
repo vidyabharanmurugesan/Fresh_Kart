@@ -1,0 +1,48 @@
+type User @table {
+  displayName: String!
+  email: String!
+  createdAt: Timestamp!
+  photoUrl: String
+  address: String
+  phoneNumber: String
+  isSeller: Boolean
+}
+
+type Product @table {
+  name: String!
+  price: Float!
+  description: String!
+  category: String!
+  createdAt: Timestamp!
+  availableQuantity: Int!
+  ingredients: String
+  allergens: String
+  imageUrl: String
+  preparationTime: String
+  isHomemade: Boolean
+  seller: User
+}
+
+type Order @table {
+  createdAt: Timestamp!
+  orderStatus: String!
+  totalAmount: Float!
+  deliveryAddress: String
+  deliveryTime: Timestamp
+  customer: User
+}
+
+type OrderItem @table(key: ["order", "product"]) {
+  quantity: Int!
+  priceAtPurchase: Float!
+  order: Order!
+  product: Product!
+}
+
+type Review @table {
+  rating: Int!
+  createdAt: Timestamp!
+  comment: String
+  reviewer: User
+  product: Product
+}

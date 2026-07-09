@@ -1,0 +1,11 @@
+cd "d:\mini project 2\frontend"
+npm run dev -- --host
+
+cd "d:\mini project 2\backend"
+..\.venv\Scripts\Activate.ps1
+python run.py
+
+
+cd "d:\mini project 2\backend"
+..\.venv\Scripts\activate.bat
+python run.py

@@ -1,0 +1,9 @@
+# Commands to run FreshKart Application
+
+## 1. Run Frontend Dev Server
+cd "d:\mini project 2\frontend"
+npm run dev
+
+## 2. Run Backend Python/Flask Server
+cd "d:\mini project 2\backend"
+..\.venv\Scripts\python run.py

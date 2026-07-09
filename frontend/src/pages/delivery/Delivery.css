@@ -1,0 +1,155 @@
+/* ── Delivery Person Specific Styles ── */
+
+.delivery-page {
+  max-width: 800px;
+}
+
+.delivery-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+}
+
+.delivery-header h1 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gray-900);
+}
+
+.delivery-header p {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
+  margin-top: 2px;
+}
+
+.toggle-btn {
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.05em;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-md);
+}
+
+.toggle-btn.offline {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: white;
+}
+
+.toggle-btn.offline:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 24px rgba(16, 185, 129, 0.4);
+}
+
+.toggle-btn.online {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+.toggle-btn.online:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 24px rgba(239, 68, 68, 0.4);
+}
+
+/* ── Incoming Order Card ── */
+.order-ring-card {
+  background: linear-gradient(135deg, #064e3b, #065f46);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  color: white;
+  text-align: center;
+  animation: pulse 2s ease infinite;
+}
+
+.order-ring-card h2 {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--space-3);
+}
+
+.order-ring-actions {
+  display: flex;
+  gap: var(--space-4);
+  justify-content: center;
+  margin-top: var(--space-6);
+}
+
+.btn-accept {
+  padding: var(--space-3) var(--space-8);
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-base);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+}
+
+.btn-reject {
+  padding: var(--space-3) var(--space-8);
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-base);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ── Active Delivery Status Buttons ── */
+.delivery-status-btns {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.delivery-status-btn {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  text-align: center;
+  transition: all var(--transition-base);
+}
+
+.delivery-status-btn.available {
+  background: var(--color-primary);
+  color: white;
+}
+
+.delivery-status-btn.done {
+  background: var(--color-gray-100);
+  color: var(--color-gray-400);
+}
+
+/* ── Call Buttons ── */
+.call-buttons {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.call-btn {
+  flex: 1;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-fast);
+}
+
+.call-btn.buyer {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.call-btn.seller {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.call-btn:hover {
+  transform: scale(1.02);
+}

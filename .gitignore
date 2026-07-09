@@ -1,0 +1,51 @@
+# ── Environment Files (NEVER commit secrets!) ──
+.env
+.env.local
+.env.production
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+.Python
+env/
+venv/
+.venv/
+
+# ── Database ──
+*.db
+*.sqlite3
+database/
+
+# ── Uploads ──
+uploads/
+
+# ── Snapshots ──
+.snapshots/
+
+# ── Instance ──
+instance/
+
+# ── IDE ──
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── Node ──
+node_modules/
+frontend/node_modules/
+
+# ── Build Output ──
+frontend/dist/
+
+# ── Logs ──
+*.log
+npm-debug.log*
