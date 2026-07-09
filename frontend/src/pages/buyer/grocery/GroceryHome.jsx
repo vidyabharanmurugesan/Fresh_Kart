@@ -5,7 +5,7 @@ import { authService } from '../../../services/authService';
 import { productService } from '../../../services/productService';
 import '../../../styles/dashboard.css';
 
-const categories = ['🥛 Dairy', '🍎 Fruits', '🥦 Vegetables', '🍚 Grains', '🧴 Personal Care', '🧹 Cleaning', '🍫 Snacks', '🥤 Beverages'];
+const categories = ['🥛 Dairy', '🍎 Fruits', '🥦 Vegetables', '🍚 Grains', '🧴 Personal Care', '🧹 Cleaning', '🍫 Snacks', ' Beverages'];
 
 export default function GroceryHome() {
   const [shops, setShops] = useState([]);
@@ -30,7 +30,7 @@ export default function GroceryHome() {
           .map(s => ({
             ...s,
             rating: (Math.random() * (5 - 3.5) + 3.5).toFixed(1),
-            emoji: '🏪'
+            emoji: ''
           }));
         setShops(processed);
       } catch (error) {
@@ -66,7 +66,7 @@ export default function GroceryHome() {
   return (
     <div className="dashboard-page" id="buyer-grocery-home">
       <div className="page-header">
-        <h1>Grocery Store 🛒</h1>
+        <h1>Grocery Store </h1>
         <p>Order fresh groceries from nearby stores</p>
       </div>
 
@@ -110,7 +110,7 @@ export default function GroceryHome() {
       {/* Shops by Rating */}
       <div className="content-card">
         <div className="content-card-header">
-          <h2>🏪 Grocery Shops Near You</h2>
+          <h2> Grocery Shops Near You</h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Sort By:</span>
             <select 

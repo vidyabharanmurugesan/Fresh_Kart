@@ -88,7 +88,7 @@ export default function OverallSelling({ domain = 'food' }) {
 
       {hasSales ? (
         <div className="content-card">
-          <div className="content-card-header"><h2>📊 Weekly Sales Performance</h2></div>
+          <div className="content-card-header"><h2> Weekly Sales Performance</h2></div>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px', height: '200px', padding: '0 16px' }}>
             {weeklyData.map((d, i) => (
               <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>

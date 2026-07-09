@@ -63,7 +63,7 @@ export default function CartSidebar({ isOpen, onClose }) {
               {cartItems.map(item => (
                 <div key={item.product_id} style={{ display: 'flex', gap: '12px', paddingBottom: '16px', borderBottom: '1px solid #f3f4f6' }}>
                   <div style={{ width: '60px', height: '60px', background: '#f3f4f6', borderRadius: '8px', overflow: 'hidden' }}>
-                    {item.image_url ? <img src={item.image_url} alt="" style={{width:'100%', height:'100%', objectFit:'cover'}} /> : <span style={{fontSize:'2rem', display:'flex', justifyContent:'center', alignItems:'center', height:'100%'}}>🍔</span>}
+                    {item.image_url ? <img src={item.image_url} alt="" style={{width:'100%', height:'100%', objectFit:'cover'}} /> : <span style={{fontSize:'2rem', display:'flex', justifyContent:'center', alignItems:'center', height:'100%'}}></span>}
                   </div>
                   <div style={{ flex: 1 }}>
                     <h4 style={{ margin: '0 0 4px 0', fontSize: '0.95rem' }}>{item.name}</h4>

@@ -111,7 +111,7 @@ export default function Sidebar({ isOpen, onClose }) {
         <nav className="sidebar-nav">
           {role !== 'delivery' && (
             <div className="sidebar-section-label">
-              {category === 'food' ? '🍔 Food Section' : '🛒 Grocery Section'}
+              {category === 'food' ? ' Food Section' : ' Grocery Section'}
             </div>
           )}
           {items.map((item) => (

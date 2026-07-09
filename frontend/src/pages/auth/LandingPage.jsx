@@ -29,7 +29,7 @@ export default function LandingPage() {
           <div className="shape shape-3" />
         </div>
         <div className="hero-content animate-fadeInUp">
-          <div className="hero-badge">🚀 Fast Delivery in 30 Minutes</div>
+          <div className="hero-badge"> Fast Delivery in 30 Minutes</div>
           <h1 className="hero-title">
             Fresh Food &<br />
             Groceries at Your<br />
@@ -115,12 +115,12 @@ export default function LandingPage() {
         <h2 className="section-title">Built For <span className="text-gradient">Everyone</span></h2>
         <div className="roles-grid">
           <div className="role-card buyer-card">
-            <span className="role-emoji">🛒</span>
+            <span className="role-emoji"></span>
             <h3>Buyers</h3>
             <p>Browse, order, and track deliveries from your favorite shops.</p>
           </div>
           <div className="role-card seller-card">
-            <span className="role-emoji">🏪</span>
+            <span className="role-emoji"></span>
             <h3>Sellers</h3>
             <p>Manage inventory, track sales, and connect with customers.</p>
           </div>

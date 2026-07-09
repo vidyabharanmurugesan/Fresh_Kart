@@ -173,7 +173,7 @@ export default function BillsStorage({ domain = 'food' }) {
 
       <div className="content-card">
         <div className="content-card-header">
-          <h2>💰 Invoice History</h2>
+          <h2> Invoice History</h2>
           <div style={{ position: 'relative' }}>
             <FiSearch style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
             <input 
@@ -198,7 +198,7 @@ export default function BillsStorage({ domain = 'food' }) {
               transition: 'all 0.2s'
             }}
           >
-            ✅ Paid Invoices
+             Paid Invoices
           </button>
           <button 
             onClick={() => setPaymentTab('unpaid')}
@@ -209,7 +209,7 @@ export default function BillsStorage({ domain = 'food' }) {
               transition: 'all 0.2s'
             }}
           >
-            ❌ Unpaid Invoices
+             Unpaid Invoices
           </button>
         </div>
 

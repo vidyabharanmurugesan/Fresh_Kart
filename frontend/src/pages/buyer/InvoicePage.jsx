@@ -203,7 +203,7 @@ export default function InvoicePage() {
                       <img src={item.image_url} alt={item.name} className="item-thumbnail" />
                     ) : (
                       <div className="item-thumbnail" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', background: '#f3f4f6' }}>
-                        {order.domain === 'grocery' ? '🍏' : '🍔'}
+                        {order.domain === 'grocery' ? '🍏' : ''}
                       </div>
                     )}
                     <div>

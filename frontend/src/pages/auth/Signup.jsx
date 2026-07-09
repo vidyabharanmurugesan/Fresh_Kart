@@ -18,8 +18,8 @@ L.Icon.Default.mergeOptions({
 });
 
 const roles = [
-  { id: 'buyer', label: 'Buyer', emoji: '🛒', desc: 'Order food & groceries', color: '#10b981' },
-  { id: 'seller', label: 'Seller', emoji: '🏪', desc: 'Sell your products', color: '#f59e0b' },
+  { id: 'buyer', label: 'Buyer', emoji: '', desc: 'Order food & groceries', color: '#10b981' },
+  { id: 'seller', label: 'Seller', emoji: '', desc: 'Sell your products', color: '#f59e0b' },
   { id: 'admin', label: 'Admin', emoji: '👨‍💼', desc: 'Manage the platform', color: '#3b82f6' },
   { id: 'delivery', label: 'Delivery Partner', emoji: '🛵', desc: 'Deliver orders & earn', color: '#a78bfa' },
 ];
@@ -125,7 +125,7 @@ function LocationPickerMap({ value, onChange, onAddressResolve }) {
             cursor: 'pointer'
           }}
         >
-          📍 Use Current Location
+           Use Current Location
         </button>
         <span style={{ fontSize: '0.75rem', color: 'var(--color-gray-400)', alignSelf: 'center' }}>
           Or click on the map to pin location
@@ -517,7 +517,7 @@ export default function Signup() {
 
                 {isPhoneVerified && (
                   <div className="phone-verified-badge">
-                    <span>✅ Phone number verified successfully</span>
+                    <span> Phone number verified successfully</span>
                   </div>
                 )}
               </div>
@@ -525,7 +525,7 @@ export default function Signup() {
               {selectedRole === 'seller' && (
                 <>
                   {/* Section: Business Info */}
-                  <div className="auth-section-title">🏪 Business Info</div>
+                  <div className="auth-section-title"> Business Info</div>
                   
                   <div className="auth-grid-2">
                     <div className="input-group">
@@ -556,8 +556,8 @@ export default function Signup() {
                         className="auth-select"
                         style={{ paddingLeft: 'calc(var(--space-4) + 28px)' }}
                       >
-                        <option value="food">🍱 Shop Type: Food</option>
-                        <option value="grocery">🛒 Shop Type: Grocery</option>
+                        <option value="food"> Shop Type: Food</option>
+                        <option value="grocery"> Shop Type: Grocery</option>
                       </select>
                     </div>
 
@@ -572,9 +572,9 @@ export default function Signup() {
                           className="auth-select"
                           style={{ paddingLeft: 'calc(var(--space-4) + 28px)' }}
                         >
-                          <option value="both">🍔 Veg & Non-Veg (Both)</option>
-                          <option value="veg">🟢 Pure Veg</option>
-                          <option value="non-veg">🔴 Non-Veg Only</option>
+                          <option value="both"> Veg & Non-Veg (Both)</option>
+                          <option value="veg"> Pure Veg</option>
+                          <option value="non-veg"> Non-Veg Only</option>
                         </select>
                       </div>
                     )}
@@ -640,7 +640,7 @@ export default function Signup() {
                   </div>
 
                   {/* Section: Branding & Banking */}
-                  <div className="auth-section-title">💳 Branding & Banking</div>
+                  <div className="auth-section-title"> Branding & Banking</div>
 
                   <div className="input-group">
                     <FiFileText className="input-icon" />
@@ -790,7 +790,7 @@ export default function Signup() {
                   </div>
 
                   {/* Identity Verification Section */}
-                  <div className="auth-section-title">🛡️ Identity Verification</div>
+                  <div className="auth-section-title"> Identity Verification</div>
                   
                   <div className="auth-grid-2">
                     <div className="input-group">
@@ -973,7 +973,7 @@ export default function Signup() {
                           {uploadingFields.driving_license_image ? (
                             <span className="upload-loader">Uploading...</span>
                           ) : formData.driving_license_image ? (
-                            <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 600 }}>✅ Uploaded</span>
+                            <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 600 }}> Uploaded</span>
                           ) : (
                             <>
                               <FiUpload className="upload-icon" style={{ fontSize: '1rem' }} />
@@ -997,7 +997,7 @@ export default function Signup() {
                           {uploadingFields.rc_book_image ? (
                             <span className="upload-loader">Uploading...</span>
                           ) : formData.rc_book_image ? (
-                            <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 600 }}>✅ Uploaded</span>
+                            <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 600 }}> Uploaded</span>
                           ) : (
                             <>
                               <FiUpload className="upload-icon" style={{ fontSize: '1rem' }} />
@@ -1021,7 +1021,7 @@ export default function Signup() {
                           {uploadingFields.vehicle_insurance_image ? (
                             <span className="upload-loader">Uploading...</span>
                           ) : formData.vehicle_insurance_image ? (
-                            <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 600 }}>✅ Uploaded</span>
+                            <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 600 }}> Uploaded</span>
                           ) : (
                             <>
                               <FiUpload className="upload-icon" style={{ fontSize: '1rem' }} />
@@ -1034,7 +1034,7 @@ export default function Signup() {
                   </div>
 
                   {/* Address Section */}
-                  <div className="auth-section-title">📍 Address & Location Pinpointing</div>
+                  <div className="auth-section-title"> Address & Location Pinpointing</div>
                   <div className="input-group">
                     <FiMapPin className="input-icon" />
                     <input
@@ -1084,7 +1084,7 @@ export default function Signup() {
                   />
 
                   {/* Bank Details Section */}
-                  <div className="auth-section-title">💳 Bank Details</div>
+                  <div className="auth-section-title"> Bank Details</div>
                   <div className="auth-grid-2">
                     <div className="input-group">
                       <FiUser className="input-icon" />
@@ -1172,7 +1172,7 @@ export default function Signup() {
                   <div className="auth-section-title">🔑 Required Permissions</div>
                   <div style={{ background: '#1e293b', padding: '15px', borderRadius: '8px', border: '1px solid #334155', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>📍 Location Access (Always Allow while delivering)</span>
+                      <span style={{ fontSize: '0.8rem', color: '#cbd5e1' }}> Location Access (Always Allow while delivering)</span>
                       <button
                         type="button"
                         onClick={() => togglePermission('location')}
@@ -1429,7 +1429,7 @@ export default function Signup() {
       {showSuccessModal && (
         <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.85)', zIndex: 9999, display: 'flex', justifyContent: 'center', alignItems: 'center', backdropFilter: 'blur(8px)', padding: '20px' }}>
           <div className="modal-content animate-scaleIn" style={{ background: '#1e293b', color: 'white', border: '1px solid #334155', borderRadius: '12px', width: '100%', maxWidth: '500px', padding: '30px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
-            <div style={{ fontSize: '4rem' }}>🎉</div>
+            <div style={{ fontSize: '4rem' }}></div>
             <h2 style={{ margin: 0, fontSize: '1.5rem', color: '#10b981' }}>Application Submitted!</h2>
             <p style={{ fontSize: '0.9rem', lineHeight: '1.6', color: '#cbd5e1' }}>
               Your application has been submitted successfully. Our verification team will review your documents. Once approved, you can start accepting delivery orders.

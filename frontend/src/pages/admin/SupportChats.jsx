@@ -149,7 +149,7 @@ export default function SupportChats({ domain = 'food' }) {
   return (
     <div className="dashboard-page" id="admin-support-dashboard">
       <div className="page-header">
-        <h1>Customer Support Chat 💬</h1>
+        <h1>Customer Support Chat </h1>
         <p>Manage all incoming buyer queries and support tickets</p>
       </div>
 

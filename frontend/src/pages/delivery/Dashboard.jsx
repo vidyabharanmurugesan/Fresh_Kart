@@ -98,7 +98,7 @@ export default function DeliveryDashboard() {
         <div>
           <h1>Hi, {user?.name} 🛵</h1>
           <p>
-            {!isApproved ? '⏳ Onboarding Pending' : isOnline ? '🟢 You are online' : '🔴 You are offline'}{' '}
+            {!isApproved ? ' Onboarding Pending' : isOnline ? ' You are online' : ' You are offline'}{' '}
             ({activeDomain === 'food' ? 'Food Mode' : 'Grocery Mode'})
           </p>
         </div>
@@ -136,7 +136,7 @@ export default function DeliveryDashboard() {
           gap: '8px',
           textAlign: 'center'
         }}>
-          <span style={{ fontSize: '2.5rem' }}>⏳</span>
+          <span style={{ fontSize: '2.5rem' }}></span>
           <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>Verification Pending</h3>
           <p style={{ margin: 0, fontSize: '0.85rem', color: '#cbd5e1', lineHeight: '1.5', maxWidth: '600px' }}>
             Your application has been submitted successfully. Our verification team will review your documents. Once approved, you can start accepting delivery orders.
@@ -154,7 +154,7 @@ export default function DeliveryDashboard() {
             color: activeDomain === 'food' ? 'white' : '#4b5563', transition: 'all 0.2s'
           }}
         >
-          🍔 Food Dashboard
+           Food Dashboard
         </button>
         <button 
           onClick={() => setActiveDomain('grocery')} 
@@ -164,7 +164,7 @@ export default function DeliveryDashboard() {
             color: activeDomain === 'grocery' ? 'white' : '#4b5563', transition: 'all 0.2s'
           }}
         >
-          🛒 Grocery Dashboard
+           Grocery Dashboard
         </button>
       </div>
 
@@ -217,7 +217,7 @@ export default function DeliveryDashboard() {
                     </div>
                   </div>
                   <p style={{ fontSize: '0.85rem', marginBottom: '16px' }}>
-                    📦 {order.items?.length || 0} items • <strong>₹{order.total_amount}</strong>
+                     {order.items?.length || 0} items • <strong>₹{order.total_amount}</strong>
                   </p>
                   <div className="order-ring-actions">
                     <button className="btn-accept" onClick={() => handleAccept(order.order_id)} style={{ cursor: 'pointer', border: 'none' }}>

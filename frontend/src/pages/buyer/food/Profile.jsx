@@ -117,7 +117,7 @@ function LocationPickerMap({ value, onChange, onAddressResolve }) {
             cursor: 'pointer'
           }}
         >
-          📍 Use Current Location
+           Use Current Location
         </button>
         <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', alignSelf: 'center' }}>
           Or click on the map to pin location
@@ -475,7 +475,7 @@ export default function Profile() {
                   transition: 'all 0.2s'
                 }}
               >
-                {user.role === 'delivery' ? '📋 Basic Info & Preferences' : '📋 Basic Info & Onboarding'}
+                {user.role === 'delivery' ? ' Basic Info & Preferences' : ' Basic Info & Onboarding'}
               </button>
               <button
                 type="button"
@@ -492,7 +492,7 @@ export default function Profile() {
                   transition: 'all 0.2s'
                 }}
               >
-                {user.role === 'delivery' ? '🛡️ Verification, Vehicle & Bank Docs' : '🛡️ Verification & Legal Docs'}
+                {user.role === 'delivery' ? ' Verification, Vehicle & Bank Docs' : ' Verification & Legal Docs'}
               </button>
             </div>
           )}
@@ -1012,7 +1012,7 @@ export default function Profile() {
                     }))}
                   />
 
-                  <h3 style={{ margin: '10px 0 0 0', fontSize: '0.95rem', color: '#10b981' }}>💳 Bank Details</h3>
+                  <h3 style={{ margin: '10px 0 0 0', fontSize: '0.95rem', color: '#10b981' }}> Bank Details</h3>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                     <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-start' }}>
                       <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Account Holder Name</label>

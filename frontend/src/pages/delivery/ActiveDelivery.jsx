@@ -111,7 +111,7 @@ export default function ActiveDelivery() {
           color: activeDomain === 'food' ? 'white' : '#4b5563', transition: 'all 0.2s'
         }}
       >
-        🍔 Active Food
+         Active Food
       </button>
       <button 
         onClick={() => setActiveDomain('grocery')} 
@@ -121,7 +121,7 @@ export default function ActiveDelivery() {
           color: activeDomain === 'grocery' ? 'white' : '#4b5563', transition: 'all 0.2s'
         }}
       >
-        🛒 Active Grocery
+         Active Grocery
       </button>
     </div>
   );
@@ -175,14 +175,14 @@ export default function ActiveDelivery() {
         <div style={{ padding: '0 10px 20px 10px' }}>
           <p><FiMapPin /> <strong>Pickup (Seller ID):</strong> {activeOrder.seller_id}</p>
           <p><FiMapPin /> <strong>Drop-off:</strong> {activeOrder.address || 'N/A'}</p>
-          <p>📦 <strong>Items:</strong> {activeOrder.items?.map(i => `${i.name} x${i.quantity}`).join(', ')}</p>
+          <p> <strong>Items:</strong> {activeOrder.items?.map(i => `${i.name} x${i.quantity}`).join(', ')}</p>
           <p>💵 <strong>Amount:</strong> ₹{activeOrder.total_amount}</p>
         </div>
 
         <div className="delivery-status-btns">
           {!isPickedUp ? (
             <button className="delivery-status-btn available" onClick={() => handleStatusUpdate('picked_up')}>
-              📦 Picked Up Order
+               Picked Up Order
             </button>
           ) : (
             <button className="delivery-status-btn done">
@@ -192,18 +192,18 @@ export default function ActiveDelivery() {
 
           {isPickedUp ? (
             <button className="delivery-status-btn available" onClick={() => handleStatusUpdate('delivered')}>
-              ✅ Mark Delivered
+               Mark Delivered
             </button>
           ) : (
             <button className="delivery-status-btn" style={{ background: '#f3f4f6', color: '#9ca3af' }}>
-              ✅ Mark Delivered
+               Mark Delivered
             </button>
           )}
         </div>
       </div>
 
       <div className="content-card">
-        <div className="content-card-header"><h2>📞 Contact</h2></div>
+        <div className="content-card-header"><h2> Contact</h2></div>
         <div className="call-buttons">
           <button className="call-btn buyer" onClick={() => handleCall('buyer')}><FiPhone size={16} /> Call Buyer</button>
           <button className="call-btn seller" onClick={() => handleCall('seller')}><FiPhone size={16} /> Call Seller</button>

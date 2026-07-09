@@ -511,7 +511,7 @@ export default function ProductSelling({ domain = 'food' }) {
     <div className="dashboard-page" id={`seller-${domain}-products`}>
       <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
         <div>
-          <h1>📦 Catalog Management ({domain.toUpperCase()})</h1>
+          <h1> Catalog Management ({domain.toUpperCase()})</h1>
           <p>Complete onboarding, organize menu structures, and control inventory.</p>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
@@ -525,7 +525,7 @@ export default function ProductSelling({ domain = 'food' }) {
                 border: 'none', borderRadius: '10px', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer'
               }}
             >
-              🔄 Batch Updates ({syncQueue.length})
+               Batch Updates ({syncQueue.length})
             </button>
           )}
           <button 
@@ -537,7 +537,7 @@ export default function ProductSelling({ domain = 'food' }) {
               border: 'none', borderRadius: '10px', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer'
             }}
           >
-            📋 Onboarding Checklist {isOnboardingComplete ? '🟢' : '⚠️'}
+             Onboarding Checklist {isOnboardingComplete ? '' : ''}
           </button>
           <button 
             onClick={() => {
@@ -578,7 +578,7 @@ export default function ProductSelling({ domain = 'food' }) {
       {activeTab === 'onboarding' && (
         <div className="content-card">
           <div className="content-card-header">
-            <h2>📋 Onboarding Checklist Status</h2>
+            <h2> Onboarding Checklist Status</h2>
             <button onClick={() => setActiveTab('inventory')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)' }}><FiX size={20}/></button>
           </div>
           
@@ -590,7 +590,7 @@ export default function ProductSelling({ domain = 'food' }) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {getOnboardingChecklist().map((item, idx) => (
                   <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px', background: '#f9fafb', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
-                    <span style={{ fontSize: '1.2rem' }}>{item.checked ? '🟢' : '❌'}</span>
+                    <span style={{ fontSize: '1.2rem' }}>{item.checked ? '' : ''}</span>
                     <span style={{ fontSize: '0.85rem', fontWeight: 500, color: item.checked ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{item.label}</span>
                   </div>
                 ))}
@@ -598,7 +598,7 @@ export default function ProductSelling({ domain = 'food' }) {
             </div>
             
             <div>
-              <h3>✏️ Edit Onboarding Profile Info</h3>
+              <h3> Edit Onboarding Profile Info</h3>
               <form onSubmit={handleSaveOnboarding} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <div>
@@ -722,12 +722,12 @@ export default function ProductSelling({ domain = 'food' }) {
       {activeTab === 'batch' && domain === 'food' && (
         <div className="content-card">
           <div className="content-card-header">
-            <h2>🔄 Pending Menu Sync Queue (Batch Release)</h2>
+            <h2> Pending Menu Sync Queue (Batch Release)</h2>
             <button onClick={() => setActiveTab('inventory')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)' }}><FiX size={20}/></button>
           </div>
           
           <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>
-            ⚠️ When deploying updates on Swiggy or Zomato, uploading items one-by-one causes active menus to toggle off briefly. We batch updates together for a single transaction to maintain consistent customer visibility.
+             When deploying updates on Swiggy or Zomato, uploading items one-by-one causes active menus to toggle off briefly. We batch updates together for a single transaction to maintain consistent customer visibility.
           </p>
 
           <div style={{ background: '#f3f4f6', padding: '15px', borderRadius: '10px', marginBottom: '20px' }}>
@@ -766,7 +766,7 @@ export default function ProductSelling({ domain = 'food' }) {
       {activeTab === 'inventory' && (
         <div className="content-card">
           <div className="content-card-header" style={{ flexWrap: 'wrap', gap: '15px' }}>
-            <h2>📋 Inventory Items</h2>
+            <h2> Inventory Items</h2>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '300px', background: 'var(--background)', padding: '6px 12px', borderRadius: '8px', border: '1px solid var(--border)' }}>
               <FiSearch style={{ color: 'var(--text-secondary)' }} />
               <input 
@@ -798,7 +798,7 @@ export default function ProductSelling({ domain = 'food' }) {
                       <td style={{ fontWeight: 600 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                           <span style={{ fontSize: '1.5rem', width: '40px', height: '40px', background: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px' }}>
-                            {item.image_url ? <img src={item.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} /> : (domain === 'food' ? '🍔' : '📦')}
+                            {item.image_url ? <img src={item.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} /> : (domain === 'food' ? '' : '')}
                           </span>
                           <div>
                             <div>{item.name}</div>
@@ -819,7 +819,7 @@ export default function ProductSelling({ domain = 'food' }) {
                               background: item.dietary_tag === 'veg' ? '#ecfdf5' : item.dietary_tag === 'egg' ? '#fffbeb' : '#fef2f2',
                               color: item.dietary_tag === 'veg' ? '#047857' : item.dietary_tag === 'egg' ? '#b45309' : '#b91c1c'
                             }}>
-                              {item.dietary_tag === 'veg' ? '🟢 Veg' : item.dietary_tag === 'egg' ? '🥚 Egg' : '🔴 Non-Veg'}
+                              {item.dietary_tag === 'veg' ? ' Veg' : item.dietary_tag === 'egg' ? ' Egg' : ' Non-Veg'}
                             </span>
                           </td>
                           <td style={{ color: '#059669', fontWeight: 600 }}>₹{item.price}</td>
@@ -872,7 +872,7 @@ export default function ProductSelling({ domain = 'food' }) {
             
             {/* Modal Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid rgba(148, 163, 184, 0.15)', paddingBottom: '15px' }}>
-              <h2 style={{ margin: 0, fontSize: '1.3rem', color: '#f8fafc' }}>{isEditingProduct ? '✏️ Edit Product' : '➕ Upload New Product'}</h2>
+              <h2 style={{ margin: 0, fontSize: '1.3rem', color: '#f8fafc' }}>{isEditingProduct ? ' Edit Product' : '➕ Upload New Product'}</h2>
               <button onClick={() => setIsModalOpen(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#94a3b8' }}><FiX size={22}/></button>
             </div>
 
@@ -995,7 +995,7 @@ export default function ProductSelling({ domain = 'food' }) {
                   {/* Step 2: Item-Level Details */}
                   {currentStep === 2 && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                      <h3>🍽️ Item-Level Details</h3>
+                      <h3> Item-Level Details</h3>
                       
                       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '15px' }}>
                         <div className="input-group">
@@ -1017,9 +1017,9 @@ export default function ProductSelling({ domain = 'food' }) {
                         <div className="input-group">
                           <label>Dietary Tag *</label>
                           <select value={formData.dietary_tag} onChange={e => setFormData({ ...formData, dietary_tag: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                            <option value="veg">🟢 Veg</option>
-                            <option value="egg">🥚 Egg</option>
-                            <option value="non-veg">🔴 Non-Veg</option>
+                            <option value="veg"> Veg</option>
+                            <option value="egg"> Egg</option>
+                            <option value="non-veg"> Non-Veg</option>
                           </select>
                         </div>
                         <div className="input-group">
@@ -1043,9 +1043,9 @@ export default function ProductSelling({ domain = 'food' }) {
                         <div className="input-group">
                           <label>Spice Level</label>
                           <select value={formData.spice_level} onChange={e => setFormData({ ...formData, spice_level: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                            <option value="mild">Mild 🌶️</option>
-                            <option value="medium">Medium 🌶️🌶️</option>
-                            <option value="hot">Hot 🌶️🌶️🌶️</option>
+                            <option value="mild">Mild </option>
+                            <option value="medium">Medium </option>
+                            <option value="hot">Hot </option>
                           </select>
                         </div>
                       </div>
@@ -1058,7 +1058,7 @@ export default function ProductSelling({ domain = 'food' }) {
                       {/* Photo upload with Zomato guidelines check */}
                       <div style={{ background: '#f9fafb', padding: '15px', borderRadius: '12px', border: '1px dashed var(--border)', marginTop: '10px' }}>
                         <strong>🖼️ Item Photo Upload</strong>
-                        <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: '4px 0 10px 0' }}>💡 Zomato Guidelines: Centered dish, no watermark/logo, no hands in frame.</p>
+                        <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: '4px 0 10px 0' }}> Zomato Guidelines: Centered dish, no watermark/logo, no hands in frame.</p>
                         <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
                           <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'image_url')} style={{ display: 'none' }} id="item-image-file" />
                           <label htmlFor="item-image-file" style={{ padding: '10px 20px', background: 'var(--color-primary)', color: 'white', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}>
@@ -1112,7 +1112,7 @@ export default function ProductSelling({ domain = 'food' }) {
 
                       {/* Special Categories: Cakes / Combos */}
                       <div>
-                        <h3>🍰 Special Categories</h3>
+                        <h3> Special Categories</h3>
                         <div style={{ display: 'flex', gap: '20px', marginTop: '10px' }}>
                           <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
                             <input type="checkbox" checked={formData.is_cake} onChange={e => setFormData({ ...formData, is_cake: e.target.checked })} /> Cake Specific Attributes
@@ -1137,8 +1137,8 @@ export default function ProductSelling({ domain = 'food' }) {
                             <div className="input-group">
                               <label>Cake Egg/Eggless Tag *</label>
                               <select value={formData.cake_dietary} onChange={e => setFormData({ ...formData, cake_dietary: e.target.value })} style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid var(--border)' }}>
-                                <option value="eggless">Eggless 🟢</option>
-                                <option value="regular">Contains Egg 🥚</option>
+                                <option value="eggless">Eggless </option>
+                                <option value="regular">Contains Egg </option>
                               </select>
                             </div>
                           </div>
@@ -1168,10 +1168,10 @@ export default function ProductSelling({ domain = 'food' }) {
                   {/* Step 4: Go Live Preview */}
                   {currentStep === 4 && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                      <h3>📋 Review Menu Item</h3>
+                      <h3> Review Menu Item</h3>
                       <div style={{ background: '#f3f4f6', padding: '20px', borderRadius: '12px', display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '20px' }}>
                         <div style={{ width: '100%', height: '120px', background: '#d1d5db', borderRadius: '8px', overflow: 'hidden' }}>
-                          {formData.image_url ? <img src={formData.image_url} alt="Dish" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: '3rem', display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>🍔</span>}
+                          {formData.image_url ? <img src={formData.image_url} alt="Dish" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: '3rem', display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}></span>}
                         </div>
                         <div>
                           <h2 style={{ margin: '0 0 5px 0' }}>{formData.name || 'Untitled Dish'}</h2>
@@ -1179,7 +1179,7 @@ export default function ProductSelling({ domain = 'food' }) {
                           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '5px' }}>Category: {formData.category} &gt; {formData.subcategory || 'General'}</div>
                           <div style={{ marginTop: '8px' }}>
                             <span style={{ marginRight: '8px', padding: '2px 6px', background: 'white', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
-                              {formData.dietary_tag === 'veg' ? '🟢 Veg' : formData.dietary_tag === 'egg' ? '🥚 Egg' : '🔴 Non-Veg'}
+                              {formData.dietary_tag === 'veg' ? ' Veg' : formData.dietary_tag === 'egg' ? ' Egg' : ' Non-Veg'}
                             </span>
                             <span style={{ padding: '2px 6px', background: 'white', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
                               Serves {formData.serves_how_many}
@@ -1201,7 +1201,7 @@ export default function ProductSelling({ domain = 'food' }) {
                   {/* Step 1: Product Master Data */}
                   {currentStep === 1 && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                      <h3>📋 Product Master Data (Zepto / Blinkit Catalog)</h3>
+                      <h3> Product Master Data (Zepto / Blinkit Catalog)</h3>
                       
                       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '15px' }}>
                         <div className="input-group">
@@ -1302,7 +1302,7 @@ export default function ProductSelling({ domain = 'food' }) {
                   {/* Step 3: Inventory & Logistics */}
                   {currentStep === 3 && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                      <h3>🚚 Dark Store Logistics & Inventory</h3>
+                      <h3> Dark Store Logistics & Inventory</h3>
 
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
                         <div className="input-group">
@@ -1329,7 +1329,7 @@ export default function ProductSelling({ domain = 'food' }) {
                   {/* Step 4: Pricing & Compliance */}
                   {currentStep === 4 && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                      <h3>💳 Commission Slabs & GST Compliance</h3>
+                      <h3> Commission Slabs & GST Compliance</h3>
 
                       <div style={{ background: '#f3f4f6', padding: '20px', borderRadius: '10px' }}>
                         <strong>Platform Commission Calculations:</strong>
@@ -1358,7 +1358,7 @@ export default function ProductSelling({ domain = 'food' }) {
                   {/* Step 5: Go Live Sign-off */}
                   {currentStep === 5 && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                      <h3>🛡️ Category Manager Approval & Go Live</h3>
+                      <h3> Category Manager Approval & Go Live</h3>
 
                       <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', padding: '20px', borderRadius: '12px' }}>
                         <h4>Catalog Sign-off Summary</h4>

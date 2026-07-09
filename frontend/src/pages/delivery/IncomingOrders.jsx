@@ -70,7 +70,7 @@ export default function IncomingOrders() {
             color: activeDomain === 'food' ? 'white' : '#4b5563', transition: 'all 0.2s'
           }}
         >
-          🍔 Food requests
+           Food requests
         </button>
         <button 
           onClick={() => setActiveDomain('grocery')} 
@@ -80,7 +80,7 @@ export default function IncomingOrders() {
             color: activeDomain === 'grocery' ? 'white' : '#4b5563', transition: 'all 0.2s'
           }}
         >
-          🛒 Grocery requests
+           Grocery requests
         </button>
       </div>
 
@@ -100,7 +100,7 @@ export default function IncomingOrders() {
               </div>
             </div>
             <p style={{ fontSize: '0.85rem' }}>
-              📦 {order.items?.length || 0} items • <strong>₹{order.total_amount}</strong>
+               {order.items?.length || 0} items • <strong>₹{order.total_amount}</strong>
             </p>
             <div className="order-ring-actions">
               <button className="btn-accept" onClick={() => handleAccept(order.order_id)} style={{ cursor: 'pointer', border: 'none' }}>

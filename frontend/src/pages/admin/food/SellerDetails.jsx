@@ -168,7 +168,7 @@ export default function SellerDetails({ domain = 'food' }) {
 
       <div className="content-card">
         <div className="content-card-header">
-          <h2>🏪 Active Sellers & Shops</h2>
+          <h2> Active Sellers & Shops</h2>
           <div style={{ position: 'relative' }}>
             <FiSearch style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
             <input 
@@ -251,7 +251,7 @@ export default function SellerDetails({ domain = 'food' }) {
                   width: '40px', height: '40px', borderRadius: '50%', background: '#dbeafe', color: '#2563eb',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '1.2rem'
                 }}>
-                  🏪
+                  
                 </div>
                 <div>
                   <h3 style={{ margin: 0, fontSize: '1.2rem', color: '#111827' }}>{selectedSeller.shop_name}</h3>

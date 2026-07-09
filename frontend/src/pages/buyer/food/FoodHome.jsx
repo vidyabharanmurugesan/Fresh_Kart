@@ -34,7 +34,7 @@ export default function FoodHome() {
           .map(s => ({
             ...s,
             rating: (Math.random() * (5 - 3.8) + 3.8).toFixed(1),
-            emoji: isShakeShop(s.shop_name || s.name || '') ? '🥤' : '🍔'
+            emoji: isShakeShop(s.shop_name || s.name || '') ? '' : ''
           }));
 
         setFoodShops(processed);
@@ -62,7 +62,7 @@ export default function FoodHome() {
   return (
     <div className="dashboard-page" id="buyer-food-home">
       <div className="page-header">
-        <h1>Hey {user?.name} 👋</h1>
+        <h1>Hey {user?.name} </h1>
         <p>What would you like to eat today?</p>
       </div>
 
@@ -103,7 +103,7 @@ export default function FoodHome() {
       {/* Food Row */}
       <div className="content-card">
         <div className="content-card-header">
-          <h2>🍔 Popular Food Shops</h2>
+          <h2> Popular Food Shops</h2>
         </div>
         {loading ? (
           <p style={{ padding: '20px' }}>Loading shops...</p>
@@ -137,7 +137,7 @@ export default function FoodHome() {
       {/* Top Searches */}
       <div className="content-card">
         <div className="content-card-header">
-          <h2>🔥 Top Searches</h2>
+          <h2> Top Searches</h2>
         </div>
         <div className="search-list">
           {topSearches.map((item, i) => (

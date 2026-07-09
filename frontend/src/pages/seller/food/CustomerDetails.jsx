@@ -78,7 +78,7 @@ export default function CustomerDetails({ domain = 'food' }) {
       <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '24px', flexWrap: 'wrap' }}>
         {/* Customer List */}
         <div className="content-card">
-          <div className="content-card-header"><h2>👥 Customers</h2></div>
+          <div className="content-card-header"><h2> Customers</h2></div>
           {loading ? (
             <p style={{ padding: '20px' }}>Loading customers...</p>
           ) : (

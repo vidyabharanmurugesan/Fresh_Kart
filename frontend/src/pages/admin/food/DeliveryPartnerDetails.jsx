@@ -305,7 +305,7 @@ export default function DeliveryPartnerDetails({ domain = 'food' }) {
                   background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', padding: '16px', marginBottom: '24px'
                 }}>
                   <p style={{ margin: 0, color: '#166534', fontWeight: 600, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    🟢 Delivery partner is currently Idle (waiting for new orders)
+                     Delivery partner is currently Idle (waiting for new orders)
                   </p>
                 </div>
               )}

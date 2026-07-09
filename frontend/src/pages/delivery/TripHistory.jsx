@@ -49,7 +49,7 @@ export default function TripHistory() {
             color: activeDomain === 'food' ? 'white' : '#4b5563', transition: 'all 0.2s'
           }}
         >
-          🍔 Food Deliveries
+           Food Deliveries
         </button>
         <button 
           onClick={() => setActiveDomain('grocery')} 
@@ -59,12 +59,12 @@ export default function TripHistory() {
             color: activeDomain === 'grocery' ? 'white' : '#4b5563', transition: 'all 0.2s'
           }}
         >
-          🛒 Grocery Deliveries
+           Grocery Deliveries
         </button>
       </div>
 
       <div className="content-card">
-        <div className="content-card-header"><h2>📋 Recent Trips ({activeDomain === 'food' ? 'Food' : 'Grocery'})</h2></div>
+        <div className="content-card-header"><h2> Recent Trips ({activeDomain === 'food' ? 'Food' : 'Grocery'})</h2></div>
         {hasTrips ? (
           <table className="data-table">
             <thead><tr><th>Order</th><th>From</th><th>To</th><th>Payout</th><th>Time</th><th>Status</th></tr></thead>

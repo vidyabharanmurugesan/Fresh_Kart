@@ -83,7 +83,7 @@ export default function Earnings() {
             color: activeDomain === 'food' ? 'white' : '#4b5563', transition: 'all 0.2s'
           }}
         >
-          🍔 Food Earnings
+           Food Earnings
         </button>
         <button 
           onClick={() => setActiveDomain('grocery')} 
@@ -93,7 +93,7 @@ export default function Earnings() {
             color: activeDomain === 'grocery' ? 'white' : '#4b5563', transition: 'all 0.2s'
           }}
         >
-          🛒 Grocery Earnings
+           Grocery Earnings
         </button>
       </div>
       
@@ -113,7 +113,7 @@ export default function Earnings() {
       </div>
 
       <div className="content-card">
-        <div className="content-card-header"><h2>💰 Earnings Breakdown</h2></div>
+        <div className="content-card-header"><h2> Earnings Breakdown</h2></div>
         {hasEarnings ? (
           <table className="data-table">
             <thead><tr><th>Date</th><th>Deliveries</th><th>Base Pay</th><th>Tips</th><th>Total Payout</th></tr></thead>
