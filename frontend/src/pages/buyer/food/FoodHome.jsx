@@ -49,8 +49,8 @@ export default function FoodHome() {
     }
   };
 
-  const handleShopClick = (sellerId, shopName) => {
-    navigate(`/buyer/food/products?sellerId=${sellerId}&shopName=${encodeURIComponent(shopName)}`);
+  const handleShopClick = (sellerId, shopName, shopLogo) => {
+    navigate(`/buyer/food/products?sellerId=${sellerId}&shopName=${encodeURIComponent(shopName)}&shopLogo=${encodeURIComponent(shopLogo || '')}`);
   };
 
   const filteredFoodShops = foodShops.filter(shop => 
@@ -118,10 +118,14 @@ export default function FoodHome() {
               <div 
                 className="shop-card" 
                 key={shop.id || i}
-                onClick={() => handleShopClick(shop.id, shop.shop_name || shop.name)}
+                onClick={() => handleShopClick(shop.id, shop.shop_name || shop.name, shop.shop_logo)}
                 style={{ cursor: 'pointer' }}
               >
-                <div className="shop-card-img">{shop.emoji}</div>
+                <div className="shop-card-img" style={{ overflow: 'hidden' }}>
+                  {shop.shop_logo ? (
+                    <img src={shop.shop_logo.startsWith('http') ? shop.shop_logo : `${import.meta.env.VITE_API_BASE_URL || ''}${shop.shop_logo.startsWith('/') ? '' : '/'}${shop.shop_logo}`} alt="logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : shop.emoji}
+                </div>
                 <div className="shop-card-body">
                   <h4>{shop.shop_name || shop.name}</h4>
                   <div className="shop-rating">

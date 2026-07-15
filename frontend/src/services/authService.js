@@ -48,6 +48,11 @@ export const authService = {
     return response.data.users;
   },
 
+  async approveUser(userId, approved = true) {
+    const response = await api.put(`/auth/approve/${userId}`, { approved });
+    return response.data;
+  },
+
   async downloadSystemReport(reportType = 'all') {
     const response = await api.get(`/auth/system-report/pdf?type=${reportType}`, {
       responseType: 'blob',

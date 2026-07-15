@@ -56,8 +56,8 @@ export default function ProductSelling({ domain = 'food' }) {
     
     // Special Food Categories
     is_cake: false,
-    cake_weight: '500g', // 400g - 5000g
-    cake_dietary: 'eggless', // eggless, regular
+    cake_variants: [], // { weight: '500g', price: 500 }
+    cake_eggless_price: '',
     
     is_combo: false,
     combo_items: [], // { name: 'Burger', qty: 1, price: 90 }
@@ -278,23 +278,27 @@ export default function ProductSelling({ domain = 'food' }) {
 
   // Add items dynamically to Variants or Addons tables
   const addVariant = () => {
-    setFormData(prev => ({
-      ...prev,
-      variants: [...prev.variants, { name: '', price: '' }]
-    }));
+    setFormData({ ...formData, variants: [...formData.variants, { name: '', price: '' }] });
   };
-
   const updateVariant = (index, field, value) => {
     const newVariants = [...formData.variants];
-    newVariants[index] = { ...newVariants[index], [field]: value };
-    setFormData(prev => ({ ...prev, variants: newVariants }));
+    newVariants[index][field] = value;
+    setFormData({ ...formData, variants: newVariants });
+  };
+  const removeVariant = (index) => {
+    setFormData({ ...formData, variants: formData.variants.filter((_, i) => i !== index) });
   };
 
-  const removeVariant = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      variants: prev.variants.filter((_, i) => i !== index)
-    }));
+  const addCakeVariant = () => {
+    setFormData({ ...formData, cake_variants: [...(formData.cake_variants || []), { weight: '', price: '' }] });
+  };
+  const updateCakeVariant = (index, field, value) => {
+    const newVariants = [...(formData.cake_variants || [])];
+    newVariants[index][field] = value;
+    setFormData({ ...formData, cake_variants: newVariants });
+  };
+  const removeCakeVariant = (index) => {
+    setFormData({ ...formData, cake_variants: (formData.cake_variants || []).filter((_, i) => i !== index) });
   };
 
   const addAddon = () => {
@@ -424,8 +428,8 @@ export default function ProductSelling({ domain = 'food' }) {
       variants: item.variants || [],
       addons: item.addons || [],
       is_cake: item.is_cake || false,
-      cake_weight: item.cake_weight || '500g',
-      cake_dietary: item.cake_dietary || 'eggless',
+      cake_variants: item.cake_variants || [],
+      cake_eggless_price: item.cake_eggless_price || '',
       is_combo: item.is_combo || false,
       combo_items: item.combo_items || [],
       
@@ -1123,30 +1127,29 @@ export default function ProductSelling({ domain = 'food' }) {
                         </div>
 
                         {formData.is_cake && (
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginTop: '15px', padding: '15px', background: '#f9fafb', borderRadius: '10px' }}>
-                            <div className="input-group">
-                              <label>Cake Weight *</label>
-                              <select value={formData.cake_weight} onChange={e => setFormData({ ...formData, cake_weight: e.target.value })} style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid var(--border)' }}>
-                                <option value="400g">400g</option>
-                                <option value="500g">500g (0.5 kg)</option>
-                                <option value="1000g">1000g (1 kg)</option>
-                                <option value="1500g">1500g (1.5 kg)</option>
-                                <option value="2000g">2000g (2 kg)</option>
-                              </select>
+                          <div style={{ marginTop: '15px', padding: '15px', background: '#f9fafb', borderRadius: '10px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                              <strong>Cake Weight Variants</strong>
+                              <button onClick={addCakeVariant} style={{ padding: '3px 8px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '4px', fontSize: '0.75rem', cursor: 'pointer' }}>+ Add Weight Variant</button>
                             </div>
-                            <div className="input-group">
-                              <label>Cake Egg/Eggless Tag *</label>
-                              <select value={formData.cake_dietary} onChange={e => setFormData({ ...formData, cake_dietary: e.target.value })} style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid var(--border)' }}>
-                                <option value="eggless">Eggless </option>
-                                <option value="regular">Contains Egg </option>
-                              </select>
+                            {(formData.cake_variants || []).map((cv, idx) => (
+                              <div key={idx} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                                <input placeholder="Weight (e.g. 500g)" value={cv.weight} onChange={e => updateCakeVariant(idx, 'weight', e.target.value)} style={{ flex: 3, padding: '6px', borderRadius: '4px', border: '1px solid var(--border)' }} />
+                                <input placeholder="Price (₹)" type="number" value={cv.price} onChange={e => updateCakeVariant(idx, 'price', e.target.value)} style={{ flex: 2, padding: '6px', borderRadius: '4px', border: '1px solid var(--border)' }} />
+                                <button onClick={() => removeCakeVariant(idx)} style={{ padding: '6px', background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: '4px', cursor: 'pointer' }}><FiTrash2 size={12} /></button>
+                              </div>
+                            ))}
+                            <div className="input-group" style={{ marginTop: '15px' }}>
+                              <label>Eggless Surcharge Price (₹) (Optional)</label>
+                              <input placeholder="e.g. 50" type="number" value={formData.cake_eggless_price || ''} onChange={e => setFormData({ ...formData, cake_eggless_price: e.target.value })} style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid var(--border)' }} />
+                              <span style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '4px' }}>Extra charge if the buyer selects Eggless. Leave empty if no extra charge.</span>
                             </div>
                           </div>
                         )}
 
                         {formData.is_combo && (
                           <div style={{ marginTop: '15px', padding: '15px', background: '#f9fafb', borderRadius: '10px' }}>
-                            <div style={{ display: 'flex', justifycontent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                               <strong>Bundled Thali/Combo Items List</strong>
                               <button onClick={addComboItem} style={{ padding: '3px 8px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '4px', fontSize: '0.75rem', cursor: 'pointer' }}>+ Add Item</button>
                             </div>
@@ -1174,14 +1177,14 @@ export default function ProductSelling({ domain = 'food' }) {
                           {formData.image_url ? <img src={formData.image_url} alt="Dish" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: '3rem', display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}></span>}
                         </div>
                         <div>
-                          <h2 style={{ margin: '0 0 5px 0' }}>{formData.name || 'Untitled Dish'}</h2>
+                          <h2 style={{ margin: '0 0 5px 0', color: '#111827' }}>{formData.name || 'Untitled Dish'}</h2>
                           <div style={{ fontSize: '0.9rem', color: '#059669', fontWeight: 600 }}>₹{formData.price}</div>
-                          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '5px' }}>Category: {formData.category} &gt; {formData.subcategory || 'General'}</div>
+                          <div style={{ fontSize: '0.8rem', color: '#4b5563', marginTop: '5px' }}>Category: {formData.category} &gt; {formData.subcategory || 'General'}</div>
                           <div style={{ marginTop: '8px' }}>
-                            <span style={{ marginRight: '8px', padding: '2px 6px', background: 'white', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
+                            <span style={{ marginRight: '8px', padding: '2px 6px', background: 'white', color: '#1f2937', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
                               {formData.dietary_tag === 'veg' ? ' Veg' : formData.dietary_tag === 'egg' ? ' Egg' : ' Non-Veg'}
                             </span>
-                            <span style={{ padding: '2px 6px', background: 'white', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
+                            <span style={{ padding: '2px 6px', background: 'white', color: '#1f2937', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
                               Serves {formData.serves_how_many}
                             </span>
                           </div>

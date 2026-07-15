@@ -300,6 +300,7 @@ export default function ProductDisplay({ domain = 'food' }) {
   const [searchParams] = useSearchParams();
   const sellerId = searchParams.get('sellerId');
   const shopName = searchParams.get('shopName') || (sellerId ? 'Shop' : 'All Shops');
+  const shopLogo = searchParams.get('shopLogo');
   const categoryParam = searchParams.get('category');
   
   const [products, setProducts] = useState([]);
@@ -318,6 +319,8 @@ export default function ProductDisplay({ domain = 'food' }) {
   const [modalVariant, setModalVariant] = useState(null);
   const [modalAddons, setModalAddons] = useState([]);
   const [modalQuantity, setModalQuantity] = useState(1);
+  const [modalCakeVariant, setModalCakeVariant] = useState(null);
+  const [modalCakeDietary, setModalCakeDietary] = useState('regular');
 
   useEffect(() => {
     if (categoryParam) {
@@ -437,6 +440,14 @@ export default function ProductDisplay({ domain = 'food' }) {
       setModalVariant(null);
     }
     
+    if (product.is_cake) {
+      setModalCakeVariant(product.cake_variants && product.cake_variants.length > 0 ? product.cake_variants[0] : null);
+      setModalCakeDietary('regular');
+    } else {
+      setModalCakeVariant(null);
+      setModalCakeDietary('regular');
+    }
+    
     setModalAddons([]);
   };
 
@@ -457,6 +468,15 @@ export default function ProductDisplay({ domain = 'food' }) {
     if (modalVariant && modalVariant.price) {
       price = parseFloat(modalVariant.price);
     }
+
+    if (selectedProduct.is_cake) {
+      if (modalCakeVariant && modalCakeVariant.price) {
+        price = parseFloat(modalCakeVariant.price);
+      }
+      if (modalCakeDietary === 'eggless' && selectedProduct.cake_eggless_price) {
+        price += parseFloat(selectedProduct.cake_eggless_price);
+      }
+    }
     
     const addonsPrice = modalAddons.reduce((sum, a) => sum + parseFloat(a.price || 0), 0);
     return (price + addonsPrice) * modalQuantity;
@@ -465,19 +485,45 @@ export default function ProductDisplay({ domain = 'food' }) {
   const handleAddCustomizedToCart = () => {
     if (!selectedProduct) return;
     
-    const basePrice = modalVariant && modalVariant.price ? parseFloat(modalVariant.price) : parseFloat(selectedProduct.price);
+    let basePrice = parseFloat(selectedProduct.price);
+    let nameSuffix = '';
+
+    if (modalVariant && modalVariant.price) {
+      basePrice = parseFloat(modalVariant.price);
+      nameSuffix += ` (${modalVariant.name})`;
+    }
+
+    if (selectedProduct.is_cake) {
+      if (modalCakeVariant && modalCakeVariant.price) {
+        basePrice = parseFloat(modalCakeVariant.price);
+        nameSuffix += ` (${modalCakeVariant.weight})`;
+      }
+      if (modalCakeDietary === 'eggless') {
+        if (selectedProduct.cake_eggless_price) {
+          basePrice += parseFloat(selectedProduct.cake_eggless_price);
+        }
+        nameSuffix += ` [Eggless]`;
+      }
+    }
+
     const addonsPrice = modalAddons.reduce((sum, a) => sum + parseFloat(a.price || 0), 0);
     const itemPrice = basePrice + addonsPrice;
 
+    if (modalAddons.length > 0) {
+      nameSuffix += ` + [${modalAddons.map(a => a.name).join(', ')}]`;
+    }
+
     const customizedProduct = {
       ...selectedProduct,
-      product_id: `${selectedProduct.product_id}${modalVariant ? `-${modalVariant.name}` : ''}${modalAddons.length > 0 ? `-${modalAddons.map(a => a.name).join('-')}` : ''}`,
+      product_id: `${selectedProduct.product_id}${nameSuffix.replace(/[^a-zA-Z0-9-]/g, '-')}`,
       original_product_id: selectedProduct.product_id,
-      name: `${selectedProduct.name}${modalVariant ? ` (${modalVariant.name})` : ''}${modalAddons.length > 0 ? ` + [${modalAddons.map(a => a.name).join(', ')}]` : ''}`,
+      name: `${selectedProduct.name}${nameSuffix}`,
       price: itemPrice,
       custom_details: {
         variant: modalVariant,
-        addons: modalAddons
+        addons: modalAddons,
+        cakeVariant: modalCakeVariant,
+        cakeDietary: modalCakeDietary
       }
     };
 
@@ -490,15 +536,24 @@ export default function ProductDisplay({ domain = 'food' }) {
 
   return (
     <div className="dashboard-page" id={`buyer-${domain}-products`}>
-      <div className="page-header">
-        <h1>{sellerId ? shopName : `Browse ${domain === 'food' ? 'Food & Restaurants' : 'Grocery Catalogue'}`}</h1>
-        <p>{sellerId ? 'Order fresh selections directly from this outlet' : 'Explore choices across all shops'}</p>
-        {!sellerId && (
-          <Link to={`/buyer/${domain}/home`} style={{ display: 'inline-block', marginTop: '8px', padding: '8px 12px', background: '#10b981', color: 'white', borderRadius: '8px', textDecoration: 'none', fontWeight: 600 }}>
-             Browse Shops & Outlets
-          </Link>
+      <div className="page-header" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+        {sellerId && shopLogo && (
+          <img 
+            src={shopLogo.startsWith('http') ? shopLogo : `${import.meta.env.VITE_API_BASE_URL || ''}${shopLogo.startsWith('/') ? '' : '/'}${shopLogo}`} 
+            alt="Shop Logo" 
+            style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '12px' }}
+          />
         )}
+        <div>
+          <h1 style={{ margin: '0 0 5px 0' }}>{sellerId ? shopName : `Browse ${domain === 'food' ? 'Food & Restaurants' : 'Grocery Catalogue'}`}</h1>
+          <p style={{ margin: 0 }}>{sellerId ? 'Order fresh selections directly from this outlet' : 'Explore choices across all shops'}</p>
+        </div>
       </div>
+      {!sellerId && (
+        <Link to={`/buyer/${domain}/home`} style={{ display: 'inline-block', marginTop: '8px', padding: '8px 12px', background: '#10b981', color: 'white', borderRadius: '8px', textDecoration: 'none', fontWeight: 600 }}>
+           Browse Shops & Outlets
+        </Link>
+      )}
 
       {/* ═══════════════════════════════════════════════
            OTT-STYLE HERO BANNER — Trending Products
@@ -951,8 +1006,39 @@ export default function ProductDisplay({ domain = 'food' }) {
                   </div>
 
                   {selectedProduct.is_cake && (
-                    <div style={{ background: 'rgba(6, 78, 59, 0.25)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.3)', fontSize: '0.8rem', color: '#34d399', marginBottom: '20px' }}>
-                       <strong>Cake Info:</strong> Weight: {selectedProduct.cake_weight || '500g'} | {selectedProduct.cake_dietary === 'eggless' ? 'Eggless' : 'Contains Egg'}
+                    <div style={{ background: 'rgba(6, 78, 59, 0.25)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.3)', marginBottom: '20px' }}>
+                      <span style={{ fontSize: '0.85rem', color: '#34d399', fontWeight: 700, display: 'block', marginBottom: '8px' }}> Cake Customization</span>
+                      
+                      {selectedProduct.cake_variants && selectedProduct.cake_variants.length > 0 && (
+                        <div style={{ marginBottom: '12px' }}>
+                          <span style={{ fontSize: '0.75rem', color: '#cbd5e1', display: 'block', marginBottom: '6px' }}>Weight / Size</span>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                            {selectedProduct.cake_variants.map((cv, i) => (
+                              <label key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px', background: 'rgba(15, 23, 42, 0.4)', borderRadius: '6px', border: '1px solid rgba(148, 163, 184, 0.15)', cursor: 'pointer', color: '#f8fafc' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem' }}>
+                                  <input type="radio" name="cake-weight" checked={modalCakeVariant?.weight === cv.weight} onChange={() => setModalCakeVariant(cv)} style={{ width: '14px', height: '14px', accentColor: '#10b981' }} />
+                                  <span>{cv.weight}</span>
+                                </div>
+                                <span style={{ fontSize: '0.8rem', color: '#34d399', fontWeight: 600 }}>₹{cv.price}</span>
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <div>
+                        <span style={{ fontSize: '0.75rem', color: '#cbd5e1', display: 'block', marginBottom: '6px' }}>Dietary Preference</span>
+                        <div style={{ display: 'flex', gap: '15px' }}>
+                          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: '#f8fafc', cursor: 'pointer' }}>
+                            <input type="radio" name="cake-dietary" checked={modalCakeDietary === 'regular'} onChange={() => setModalCakeDietary('regular')} style={{ accentColor: '#10b981' }} />
+                            Regular (Contains Egg)
+                          </label>
+                          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: '#f8fafc', cursor: 'pointer' }}>
+                            <input type="radio" name="cake-dietary" checked={modalCakeDietary === 'eggless'} onChange={() => setModalCakeDietary('eggless')} style={{ accentColor: '#10b981' }} />
+                            Eggless {selectedProduct.cake_eggless_price ? `(+₹${selectedProduct.cake_eggless_price})` : ''}
+                          </label>
+                        </div>
+                      </div>
                     </div>
                   )}
 

@@ -79,7 +79,3 @@ class Config:
     CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY", None)
     CLOUDINARY_API_SECRET = os.getenv("CLOUDINARY_API_SECRET", None)
 
-    # ── Google Sheets (Login Data Logging) ──
-    GOOGLE_SHEETS_CREDENTIALS_PATH = os.getenv("GOOGLE_SHEETS_CREDENTIALS_PATH", None)
-    GOOGLE_SHEETS_API_KEY = os.getenv("GOOGLE_SHEETS_API_KEY", None)
-    GOOGLE_SHEETS_SPREADSHEET_ID = os.getenv("GOOGLE_SHEETS_SPREADSHEET_ID", None)

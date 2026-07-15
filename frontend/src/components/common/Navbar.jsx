@@ -83,7 +83,15 @@ export default function Navbar({ onToggleSidebar, onToggleCart }) {
             id="profile-menu-btn"
           >
             <div className="navbar-avatar">
-              {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+              {user?.role === 'seller' && user?.shop_logo ? (
+                <img 
+                  src={user.shop_logo.startsWith('http') ? user.shop_logo : `${import.meta.env.VITE_API_BASE_URL || ''}${user.shop_logo.startsWith('/') ? '' : '/'}${user.shop_logo}`} 
+                  alt="Shop Logo" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                />
+              ) : (
+                user?.name?.charAt(0)?.toUpperCase() || 'U'
+              )}
             </div>
             <span className="navbar-username">{user?.name || 'User'}</span>
           </button>

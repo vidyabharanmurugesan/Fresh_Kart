@@ -4,7 +4,6 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
 from app.config.settings import Config
-from app.config.db import init_db
 from app.middleware.error_handler import register_error_handlers
 from app.routes.auth_routes import auth_bp
 from app.sockets import socketio
@@ -15,17 +14,12 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     
-    # Ensure database directory exists
-    db_dir = os.path.join(os.path.dirname(__file__), 'database')
-    os.makedirs(db_dir, exist_ok=True)
-    
     # Ensure uploads directory exists
     os.makedirs(app.config.get('UPLOAD_FOLDER', 'uploads'), exist_ok=True)
     
     # Initialize extensions
     CORS(app, origins=Config.CORS_ORIGINS, supports_credentials=True)
     JWTManager(app)
-    init_db(app)
     
     # Initialize SocketIO
     socketio.init_app(app)

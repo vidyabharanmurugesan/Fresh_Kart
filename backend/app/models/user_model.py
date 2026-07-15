@@ -1,80 +1,42 @@
 from datetime import datetime
-from app.config.db import db
+from app.config.firebase_config import get_firestore_db
+import os
+import json
 
-
-class User(db.Model):
-    """User model for authentication — stored in local persistent SQLite DB."""
-    __tablename__ = 'users'
-    
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    email = db.Column(db.String(255), unique=True, nullable=False, index=True)
-    password_hash = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(20), nullable=False)  # buyer, seller, admin, delivery
-    name = db.Column(db.String(100), nullable=False)
-    phone = db.Column(db.String(20), nullable=True)
-    firebase_uid = db.Column(db.String(255), nullable=True, unique=True)
-    shop_name = db.Column(db.String(150), nullable=True)  # For sellers
-    vehicle_number = db.Column(db.String(20), nullable=True)  # For delivery
-    shop_license = db.Column(db.String(255), nullable=True)  # For sellers
-    shop_license_image = db.Column(db.String(500), nullable=True)  # For sellers
-    shop_location = db.Column(db.String(255), nullable=True)  # For sellers
-    shop_type = db.Column(db.String(50), nullable=True)  # For sellers (food or grocery)
-    
-    # Extended seller fields
-    shop_owner_name = db.Column(db.String(150), nullable=True)
-    shop_address = db.Column(db.String(500), nullable=True)
-    gps_location = db.Column(db.String(255), nullable=True)
-    aadhaar_card = db.Column(db.String(50), nullable=True)
-    pan_card = db.Column(db.String(50), nullable=True)
-    bank_account_details = db.Column(db.String(500), nullable=True)
-    shop_logo = db.Column(db.String(500), nullable=True)
-    shop_front_image = db.Column(db.String(500), nullable=True)
-    veg_nonveg = db.Column(db.String(50), nullable=True)  # veg, non-veg, both
-    
-    # Food Onboarding Fields
-    cuisine_type = db.Column(db.String(150), nullable=True)
-    operating_hours = db.Column(db.String(150), nullable=True)
-    shop_interior_image = db.Column(db.String(500), nullable=True)
-    shop_kitchen_image = db.Column(db.String(500), nullable=True)
-    
-    # Grocery Onboarding Fields
-    gstin = db.Column(db.String(50), nullable=True)
-    cancelled_cheque_image = db.Column(db.String(500), nullable=True)
-    trademark_certificate = db.Column(db.String(500), nullable=True)
-    category_manager_approval = db.Column(db.Boolean, default=False)
-    
-    # Extended delivery partner fields
-    profile_photo = db.Column(db.String(500), nullable=True)
-    aadhaar_front_image = db.Column(db.String(500), nullable=True)
-    aadhaar_back_image = db.Column(db.String(500), nullable=True)
-    pan_card_image = db.Column(db.String(500), nullable=True)
-    live_selfie_image = db.Column(db.String(500), nullable=True)
-    driving_license_number = db.Column(db.String(100), nullable=True)
-    driving_license_image = db.Column(db.String(500), nullable=True)
-    vehicle_type = db.Column(db.String(50), nullable=True)
-    rc_book_image = db.Column(db.String(500), nullable=True)
-    vehicle_insurance_image = db.Column(db.String(500), nullable=True)
-    current_address = db.Column(db.String(500), nullable=True)
-    city = db.Column(db.String(100), nullable=True)
-    state = db.Column(db.String(100), nullable=True)
-    pin_code = db.Column(db.String(20), nullable=True)
-    bank_account_holder_name = db.Column(db.String(150), nullable=True)
-    bank_name = db.Column(db.String(150), nullable=True)
-    bank_account_number = db.Column(db.String(100), nullable=True)
-    bank_ifsc_code = db.Column(db.String(50), nullable=True)
-    preferred_delivery_area = db.Column(db.String(255), nullable=True)
-    languages_known = db.Column(db.String(255), nullable=True)
-    work_type = db.Column(db.String(50), nullable=True)
-    emergency_contact_name = db.Column(db.String(150), nullable=True)
-    emergency_contact_phone = db.Column(db.String(20), nullable=True)
-    emergency_contact_relationship = db.Column(db.String(100), nullable=True)
-    
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    is_active = db.Column(db.Boolean, default=True)
+class User:
+    """User model for authentication — stored in Firebase Firestore with local JSON fallback."""
     
     VALID_ROLES = ['buyer', 'seller', 'admin', 'delivery']
+    _local_path = os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')), 'database', 'users.json')
     
-    def __init__(self, email=None, password_hash=None, role=None, name=None,
+    @staticmethod
+    def _firestore_available():
+        db = get_firestore_db()
+        return db is not None
+        
+    @staticmethod
+    def _ensure_local_store():
+        os.makedirs(os.path.dirname(User._local_path), exist_ok=True)
+        if not os.path.exists(User._local_path):
+            with open(User._local_path, 'w', encoding='utf-8') as f:
+                json.dump({}, f)
+
+    @staticmethod
+    def _read_local():
+        User._ensure_local_store()
+        with open(User._local_path, 'r', encoding='utf-8') as f:
+            try:
+                return json.load(f)
+            except Exception:
+                return {}
+
+    @staticmethod
+    def _write_local(data):
+        User._ensure_local_store()
+        with open(User._local_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, default=str, ensure_ascii=False, indent=2)
+            
+    def __init__(self, id=None, email=None, password_hash=None, role=None, name=None,
                  phone=None, firebase_uid=None, shop_name=None, vehicle_number=None,
                  shop_license=None, shop_license_image=None, shop_location=None, shop_type=None,
                  shop_owner_name=None, shop_address=None, gps_location=None, aadhaar_card=None,
@@ -87,8 +49,8 @@ class User(db.Model):
                  current_address=None, city=None, state=None, pin_code=None, bank_account_holder_name=None,
                  bank_name=None, bank_account_number=None, bank_ifsc_code=None, preferred_delivery_area=None,
                  languages_known=None, work_type=None, emergency_contact_name=None, emergency_contact_phone=None,
-                 emergency_contact_relationship=None, **kwargs):
-        super().__init__(**kwargs)
+                 emergency_contact_relationship=None, created_at=None, is_active=True, **kwargs):
+        self.id = str(id) if id else None
         self.email = email
         self.password_hash = password_hash
         self.role = role
@@ -146,7 +108,75 @@ class User(db.Model):
         self.emergency_contact_name = emergency_contact_name
         self.emergency_contact_phone = emergency_contact_phone
         self.emergency_contact_relationship = emergency_contact_relationship
+        
+        if isinstance(created_at, str):
+            try:
+                self.created_at = datetime.fromisoformat(created_at)
+            except ValueError:
+                self.created_at = datetime.utcnow()
+        else:
+            self.created_at = created_at if created_at else datetime.utcnow()
+            
+        self.is_active = is_active
     
+    @classmethod
+    def get_by_id(cls, user_id):
+        if cls._firestore_available():
+            db_firestore = get_firestore_db()
+            doc = db_firestore.collection('users').document(str(user_id)).get()
+            if doc.exists:
+                data = doc.to_dict()
+                data['id'] = doc.id
+                return cls.from_dict(data)
+            return None
+        else:
+            data = cls._read_local()
+            user_data = data.get(str(user_id))
+            if user_data:
+                user_data['id'] = str(user_id)
+                return cls.from_dict(user_data)
+            return None
+
+    @classmethod
+    def get_by_email(cls, email):
+        if cls._firestore_available():
+            db_firestore = get_firestore_db()
+            docs = db_firestore.collection('users').where('email', '==', email).limit(1).stream()
+            doc = next(docs, None)
+            if doc:
+                data = doc.to_dict()
+                data['id'] = doc.id
+                return cls.from_dict(data)
+            return None
+        else:
+            data = cls._read_local()
+            for uid, udata in data.items():
+                if udata.get('email') == email:
+                    udata['id'] = uid
+                    return cls.from_dict(udata)
+            return None
+
+    @classmethod
+    def get_all(cls):
+        if cls._firestore_available():
+            db_firestore = get_firestore_db()
+            docs = db_firestore.collection('users').stream()
+            return [doc.to_dict() | {'id': doc.id} for doc in docs]
+        else:
+            data = cls._read_local()
+            results = []
+            for uid, udata in data.items():
+                udata['id'] = uid
+                results.append(udata)
+            return results
+
+    @classmethod
+    def from_dict(cls, data):
+        """Deserialize from Firestore dictionary."""
+        if not data:
+            return None
+        return cls(**data)
+        
     def to_dict(self):
         """Serialize user to dictionary (excludes password)."""
         data = {
@@ -156,7 +186,7 @@ class User(db.Model):
             'name': self.name,
             'phone': self.phone,
             'firebase_uid': self.firebase_uid,
-            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'created_at': self.created_at.isoformat() if isinstance(self.created_at, datetime) else self.created_at,
             'is_active': self.is_active
         }
         if self.role == 'seller':
@@ -219,6 +249,28 @@ class User(db.Model):
             data['emergency_contact_relationship'] = self.emergency_contact_relationship
             data['category_manager_approval'] = self.category_manager_approval
         return data
+        
+    def to_db_dict(self):
+        """Serialize user to dictionary including password for saving to DB."""
+        data = self.to_dict()
+        data['password_hash'] = self.password_hash
+        return data
+        
+    def save(self):
+        if self._firestore_available():
+            db_firestore = get_firestore_db()
+            db_firestore.collection('users').document(self.id).set(self.to_db_dict())
+        else:
+            data = self._read_local()
+            data[self.id] = self.to_db_dict()
+            self._write_local(data)
+            
+    def update(self, update_data=None):
+        if update_data:
+            for k, v in update_data.items():
+                if hasattr(self, k):
+                    setattr(self, k, v)
+        self.save()
     
     def __repr__(self):
         return f'<User {self.email} ({self.role})>'

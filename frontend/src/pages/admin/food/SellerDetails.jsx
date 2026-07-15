@@ -107,6 +107,17 @@ export default function SellerDetails({ domain = 'food' }) {
     setShowModal(true);
   };
 
+  const handleApprove = async (sellerId, currentStatus) => {
+    try {
+      await authService.approveUser(sellerId, !currentStatus);
+      fetchData();
+    } catch (err) {
+      const errorMsg = err.response?.data?.error || err.message || 'Unknown error';
+      console.error('Failed to update approval status', err);
+      alert(`Failed to update approval status: ${errorMsg}`);
+    }
+  };
+
   if (loading) {
     return <div className="dashboard-page"><p>Loading seller details...</p></div>;
   }
@@ -213,16 +224,30 @@ export default function SellerDetails({ domain = 'food' }) {
                     <td style={{ fontWeight: 600 }}>{stats.ordersCount} orders</td>
                     <td style={{ color: '#059669', fontWeight: 600 }}>₹{stats.revenue.toFixed(2)}</td>
                     <td>
-                      <button 
-                        onClick={() => handleViewDetails(s)}
-                        style={{ 
-                          padding: '6px 12px', background: '#dbeafe', color: '#2563eb', 
-                          borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, 
-                          display: 'flex', alignItems: 'center', gap: '4px', border: 'none', cursor: 'pointer' 
-                        }}
-                      >
-                        <FiEye size={12} /> Inspect Store
-                      </button>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button 
+                          onClick={() => handleViewDetails(s)}
+                          style={{ 
+                            padding: '6px 12px', background: '#dbeafe', color: '#2563eb', 
+                            borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, 
+                            display: 'flex', alignItems: 'center', gap: '4px', border: 'none', cursor: 'pointer' 
+                          }}
+                        >
+                          <FiEye size={12} /> Inspect Store
+                        </button>
+                        <button 
+                          onClick={() => handleApprove(s.id, s.category_manager_approval)}
+                          style={{ 
+                            padding: '6px 12px', 
+                            background: s.category_manager_approval ? '#fee2e2' : '#d1fae5', 
+                            color: s.category_manager_approval ? '#dc2626' : '#059669', 
+                            borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, 
+                            display: 'flex', alignItems: 'center', gap: '4px', border: 'none', cursor: 'pointer' 
+                          }}
+                        >
+                          {s.category_manager_approval ? 'Revoke' : 'Approve'}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

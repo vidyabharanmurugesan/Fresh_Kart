@@ -10,7 +10,6 @@ const menuConfig = {
   buyer: {
     food: [
       { path: 'home', label: 'Home', icon: FiHome },
-      { path: 'products', label: 'Products', icon: FiShoppingBag },
       { path: 'tracking', label: 'Incoming Orders', icon: FiPackage },
       { path: 'invoices', label: 'Order Invoices', icon: FiFileText },
       { path: 'help', label: 'Help & Support', icon: FiHelpCircle },
@@ -18,7 +17,6 @@ const menuConfig = {
     ],
     grocery: [
       { path: 'home', label: 'Home', icon: FiHome },
-      { path: 'products', label: 'Products', icon: FiShoppingBag },
       { path: 'tracking', label: 'Incoming Orders', icon: FiPackage },
       { path: 'invoices', label: 'Order Invoices', icon: FiFileText },
       { path: 'help', label: 'Help & Support', icon: FiHelpCircle },
@@ -99,7 +97,15 @@ export default function Sidebar({ isOpen, onClose }) {
         <div className="sidebar-header">
           <div className="sidebar-user-card">
             <div className="sidebar-avatar">
-              {user.name?.charAt(0)?.toUpperCase() || 'U'}
+              {user?.role === 'seller' && user?.shop_logo ? (
+                <img 
+                  src={user.shop_logo.startsWith('http') ? user.shop_logo : `${import.meta.env.VITE_API_BASE_URL || ''}${user.shop_logo.startsWith('/') ? '' : '/'}${user.shop_logo}`} 
+                  alt="Shop Logo" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                />
+              ) : (
+                user.name?.charAt(0)?.toUpperCase() || 'U'
+              )}
             </div>
             <div className="sidebar-user-info">
               <h4>{user.name}</h4>

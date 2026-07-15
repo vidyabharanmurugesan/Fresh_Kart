@@ -88,6 +88,18 @@ export default function DeliveryPartnerDetails({ domain = 'food' }) {
     setShowModal(true);
   };
 
+  const handleApprove = async (driverId, currentStatus) => {
+    try {
+      await authService.approveUser(driverId, !currentStatus);
+      // Refresh data
+      fetchData();
+    } catch (err) {
+      const errorMsg = err.response?.data?.error || err.message || 'Unknown error';
+      console.error('Failed to update approval status', err);
+      alert(`Failed to update approval status: ${errorMsg}`);
+    }
+  };
+
   if (loading) {
     return <div className="dashboard-page"><p>Loading delivery partners information...</p></div>;
   }
@@ -207,16 +219,30 @@ export default function DeliveryPartnerDetails({ domain = 'food' }) {
                       <span className={`status-badge ${statusColorClass}`}>{isOnline}</span>
                     </td>
                     <td>
-                      <button 
-                        onClick={() => handleViewDetails(d)}
-                        style={{ 
-                          padding: '6px 12px', background: '#fef3c7', color: '#d97706', 
-                          borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, 
-                          display: 'flex', alignItems: 'center', gap: '4px', border: 'none', cursor: 'pointer' 
-                        }}
-                      >
-                        <FiEye size={12} /> View Stats
-                      </button>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button 
+                          onClick={() => handleViewDetails(d)}
+                          style={{ 
+                            padding: '6px 12px', background: '#fef3c7', color: '#d97706', 
+                            borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, 
+                            display: 'flex', alignItems: 'center', gap: '4px', border: 'none', cursor: 'pointer' 
+                          }}
+                        >
+                          <FiEye size={12} /> View Stats
+                        </button>
+                        <button 
+                          onClick={() => handleApprove(d.id, d.category_manager_approval)}
+                          style={{ 
+                            padding: '6px 12px', 
+                            background: d.category_manager_approval ? '#fee2e2' : '#d1fae5', 
+                            color: d.category_manager_approval ? '#dc2626' : '#059669', 
+                            borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, 
+                            display: 'flex', alignItems: 'center', gap: '4px', border: 'none', cursor: 'pointer' 
+                          }}
+                        >
+                          {d.category_manager_approval ? 'Revoke' : 'Approve'}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

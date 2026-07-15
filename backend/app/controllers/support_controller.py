@@ -16,7 +16,7 @@ def get_admin_support_chats():
         # Resolve buyer profiles from SQLite User table
         from app.models.user_model import User
         try:
-            users = {str(u.id): u for u in User.query.filter_by(role='buyer').all()}
+            users = {str(u.get('id')): User.from_dict(u) for u in User.get_all() if u.get('role') == 'buyer'}
         except Exception:
             users = {}
             

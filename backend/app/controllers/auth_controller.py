@@ -1,17 +1,22 @@
 from flask import request, jsonify, send_file
 from flask_jwt_extended import create_access_token, get_jwt_identity
-from app.config.db import db
 from app.models.user_model import User
 from app.utils.password_hash import hash_password, verify_password
-from app.utils.google_sheets_service import log_login_event
+from app.config.firebase_config import get_firestore_db
 import os
 import urllib.request
 import urllib.parse
 import json
 import base64
 import random
+import uuid
 from datetime import datetime, timedelta
 
+def get_user_by_email(email):
+    return User.get_by_email(email)
+
+def get_user_by_id(user_id):
+    return User.get_by_id(user_id)
 
 def signup():
     """Register a new user with role selection."""
@@ -81,12 +86,12 @@ def signup():
         return jsonify({'error': 'Password must be at least 6 characters'}), 400
     
     # Check if user already exists
-    existing_user = User.query.filter_by(email=email).first()
-    if existing_user:
+    if get_user_by_email(email):
         return jsonify({'error': 'An account with this email already exists'}), 409
     
     # Create new user
     new_user = User(
+        id=str(uuid.uuid4()),
         email=email,
         password_hash=hash_password(password),
         name=name,
@@ -136,23 +141,15 @@ def signup():
         emergency_contact_relationship=data.get('emergency_contact_relationship', '').strip() if role == 'delivery' else None,
     )
     
-    db.session.add(new_user)
-    db.session.commit()
-    
-    # Sync with Firestore users collection if initialized
-    from app.config.firebase_config import get_firestore_db
-    db_firestore = get_firestore_db()
-    if db_firestore:
-        try:
-            user_data = new_user.to_dict()
-            user_data['password_hash'] = new_user.password_hash
-            db_firestore.collection('users').document(str(new_user.id)).set(user_data)
-            print(f"[Firestore] User {new_user.email} successfully written to Firestore.")
-        except Exception as fe:
-            print(f"[ERROR] Failed to save user to Firestore: {fe}")
+    try:
+        new_user.save()
+        print(f"[Firestore/Local] User {new_user.email} successfully saved.")
+    except Exception as fe:
+        print(f"[ERROR] Failed to save user: {fe}")
+        return jsonify({'error': 'Failed to save user to database.'}), 500
             
     # Generate JWT token
-    access_token = create_access_token(identity=str(new_user.id))
+    access_token = create_access_token(identity=new_user.id)
     
     # Send seller onboarding license email if the role is seller
     if role == 'seller':
@@ -162,20 +159,11 @@ def signup():
         except Exception as mail_err:
             print(f"[ERROR] Failed to initiate seller license email sending: {mail_err}")
             
-    # Log signup event to Google Sheets
-    log_login_event(
-        event_type='signup',
-        status='success',
-        user=new_user,
-        ip_address=request.remote_addr,
-    )
-
     return jsonify({
         'message': 'Account created successfully',
         'token': access_token,
         'user': new_user.to_dict()
     }), 201
-
 
 def login():
     """Authenticate user and return JWT token."""
@@ -188,85 +176,49 @@ def login():
         return jsonify({'error': 'Email and password are required'}), 400
     
     # Find user
-    user = User.query.filter_by(email=email).first()
+    user = get_user_by_email(email)
     if not user:
-        # Log failed login — user not found
-        log_login_event(
-            event_type='login',
-            status='failed',
-            email=email,
-            ip_address=request.remote_addr,
-            failure_reason='User not found',
-        )
         return jsonify({'error': 'Invalid email or password'}), 401
     
     # Verify password
     if not verify_password(password, user.password_hash):
-        # Log failed login — wrong password
-        log_login_event(
-            event_type='login',
-            status='failed',
-            user=user,
-            ip_address=request.remote_addr,
-            failure_reason='Invalid password',
-        )
         return jsonify({'error': 'Invalid email or password'}), 401
     
     # Check if active
     if not user.is_active:
-        # Log failed login — deactivated account
-        log_login_event(
-            event_type='login',
-            status='failed',
-            user=user,
-            ip_address=request.remote_addr,
-            failure_reason='Account deactivated',
-        )
         return jsonify({'error': 'Your account has been deactivated. Contact support.'}), 403
     
     # Generate JWT token
-    access_token = create_access_token(identity=str(user.id))
+    access_token = create_access_token(identity=user.id)
     
-    # Log successful login to Google Sheets
-    log_login_event(
-        event_type='login',
-        status='success',
-        user=user,
-        ip_address=request.remote_addr,
-    )
-
     return jsonify({
         'message': 'Login successful',
         'token': access_token,
         'user': user.to_dict()
     }), 200
 
-
 def get_current_user():
     """Get the currently authenticated user's profile."""
     current_user_id = get_jwt_identity()
-    user = User.query.get(int(current_user_id))
+    user = get_user_by_id(current_user_id)
     
     if not user:
         return jsonify({'error': 'User not found'}), 404
     
     return jsonify({'user': user.to_dict()}), 200
 
-
 def get_sellers():
     """Get all sellers."""
-    sellers = User.query.filter_by(role='seller').all()
-    return jsonify({'sellers': [s.to_dict() for s in sellers]}), 200
-
+    all_users = User.get_all()
+    sellers = [u for u in all_users if u.get('role') == 'seller']
+    return jsonify({'sellers': sellers}), 200
 
 def logout():
     """Logout the current user (client-side token removal)."""
     return jsonify({'message': 'Logged out successfully'}), 200
 
-
 def google_auth():
     """Authenticate or register user using Google/Firebase token."""
-    import uuid
     import firebase_admin
     from firebase_admin import auth as firebase_auth
     
@@ -301,12 +253,13 @@ def google_auth():
         return jsonify({'error': 'Email is required for Google login'}), 400
         
     # Check if user already exists
-    user = User.query.filter_by(email=email).first()
+    user = get_user_by_email(email)
     
     if not user:
         # User doesn't exist, register them
         dummy_password = str(uuid.uuid4())
         user = User(
+            id=str(uuid.uuid4()),
             email=email,
             password_hash=hash_password(dummy_password),
             name=name or email.split('@')[0],
@@ -315,8 +268,10 @@ def google_auth():
             shop_name=shop_name if role == 'seller' else None,
             vehicle_number=vehicle_number if role == 'delivery' else None,
         )
-        db.session.add(user)
-        db.session.commit()
+        try:
+            user.save()
+        except Exception as e:
+            pass
         status_code = 201
     else:
         status_code = 200
@@ -325,16 +280,8 @@ def google_auth():
             return jsonify({'error': 'Your account has been deactivated. Contact support.'}), 403
             
     # Generate JWT token
-    access_token = create_access_token(identity=str(user.id))
+    access_token = create_access_token(identity=user.id)
     
-    # Log Google auth event to Google Sheets
-    log_login_event(
-        event_type='google_auth',
-        status='success',
-        user=user,
-        ip_address=request.remote_addr,
-    )
-
     return jsonify({
         'message': 'Google authentication successful',
         'token': access_token,
@@ -345,7 +292,6 @@ def google_auth():
 # In-memory store for phone OTPs
 # Structure: { phone_number: { "code": "123456", "expires_at": datetime } }
 otp_store = {}
-
 
 def send_sms_via_twilio(to_number, body):
     account_sid = os.getenv("TWILIO_ACCOUNT_SID")
@@ -467,16 +413,48 @@ def get_users_by_role():
         return jsonify({'error': f'Invalid role. Must be one of: {", ".join(User.VALID_ROLES)}'}), 400
         
     try:
-        users = User.query.filter_by(role=role).all()
-        return jsonify({'users': [u.to_dict() for u in users]}), 200
+        all_users = User.get_all()
+        users = []
+        for u in all_users:
+            if u.get('role') == role:
+                if 'password_hash' in u: del u['password_hash']
+                users.append(u)
+        return jsonify({'users': users}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+def approve_user(user_id):
+    """Admin only: Approve or reject a seller/delivery partner."""
+    current_user_id = get_jwt_identity()
+    admin = get_user_by_id(current_user_id)
+    
+    if not admin or admin.role != 'admin':
+        return jsonify({'error': 'Unauthorized: Admin privileges required'}), 403
+        
+    user = get_user_by_id(user_id)
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+        
+    data = request.get_json() or {}
+    is_approved = data.get('approved', True)
+    
+    user.category_manager_approval = bool(is_approved)
+    
+    try:
+        user.save()
+    except Exception as fe:
+        print(f"[ERROR] Failed to update approval: {fe}")
+        return jsonify({'error': 'Database error'}), 500
+            
+    status_text = "approved" if is_approved else "rejected"
+    return jsonify({'message': f'User successfully {status_text}', 'user': user.to_dict()}), 200
 
 
 def update_profile():
     """Update the current user's profile details."""
     current_user_id = get_jwt_identity()
-    user = User.query.get(int(current_user_id))
+    user = get_user_by_id(current_user_id)
     
     if not user:
         return jsonify({'error': 'User not found'}), 404
@@ -554,19 +532,12 @@ def update_profile():
                     val = val.strip()
                 setattr(user, field, val)
                 
-    db.session.commit()
-    
-    # Sync with Firestore users collection if initialized
-    from app.config.firebase_config import get_firestore_db
-    db_firestore = get_firestore_db()
-    if db_firestore:
-        try:
-            user_data = user.to_dict()
-            user_data['password_hash'] = user.password_hash
-            db_firestore.collection('users').document(str(user.id)).set(user_data)
-            print(f"[Firestore] User {user.email} profile successfully updated in Firestore.")
-        except Exception as fe:
-            print(f"[ERROR] Failed to update user in Firestore: {fe}")
+    try:
+        user.save()
+        print(f"[Firestore/Local] User {user.email} profile successfully updated.")
+    except Exception as fe:
+        print(f"[ERROR] Failed to update user profile: {fe}")
+        return jsonify({'error': 'Failed to update profile'}), 500
             
     return jsonify({
         'message': 'Profile updated successfully',
@@ -594,7 +565,7 @@ def download_license():
         print(f"[ERROR] JWT decode failed for license download: {jwt_err}")
         return jsonify({'error': 'Invalid or expired token'}), 401
         
-    user = User.query.get(int(current_user_id))
+    user = get_user_by_id(current_user_id)
     if not user:
         return jsonify({'error': 'User not found'}), 404
         
@@ -622,7 +593,7 @@ def download_license():
 def download_system_report_pdf():
     """Generates and downloads a comprehensive system PDF report of users and sales."""
     current_user_id = get_jwt_identity()
-    user = User.query.get(int(current_user_id))
+    user = get_user_by_id(current_user_id)
     
     if not user:
         return jsonify({'error': 'User not found'}), 404
@@ -633,14 +604,21 @@ def download_system_report_pdf():
     report_type = request.args.get('type', 'all')
     
     try:
-        # 1. Fetch users from SQLite database
-        buyers = [u.to_dict() for u in User.query.filter_by(role='buyer').all()]
-        sellers = [u.to_dict() for u in User.query.filter_by(role='seller').all()]
-        delivery_partners = [u.to_dict() for u in User.query.filter_by(role='delivery').all()]
+        all_users = User.get_all()
+            
+        buyers = [u for u in all_users if u.get('role') == 'buyer']
+        sellers = [u for u in all_users if u.get('role') == 'seller']
+        delivery_partners = [u for u in all_users if u.get('role') == 'delivery']
         
-        # 2. Fetch orders from local JSON database
+        # 2. Fetch orders from local JSON database / Firestore
         from app.models.order_model import OrderModel
-        orders = OrderModel._read_local()
+        if OrderModel._firestore_available():
+            orders_docs = OrderModel._get_collection().stream()
+            orders = [doc.to_dict() for doc in orders_docs]
+        else:
+            orders = OrderModel._read_local()
+            if isinstance(orders, dict):
+                orders = list(orders.values())
         
         # 3. Generate PDF
         from app.utils.report_generator import generate_system_report_pdf
@@ -665,7 +643,7 @@ def download_system_report_pdf():
 def upload_system_logo():
     """Uploads a new system logo and updates the active logo config."""
     current_user_id = get_jwt_identity()
-    user = User.query.get(int(current_user_id))
+    user = get_user_by_id(current_user_id)
     if not user or user.role != 'admin':
         return jsonify({'error': 'Unauthorized. Admin access required.'}), 403
         
@@ -677,7 +655,6 @@ def upload_system_logo():
         return jsonify({'error': 'No selected file'}), 400
         
     try:
-        import uuid
         from werkzeug.utils import secure_filename
         filename = secure_filename(file.filename)
         unique_filename = f"system_logo_{uuid.uuid4().hex[:8]}_{filename}"
@@ -709,7 +686,3 @@ def upload_system_logo():
     except Exception as e:
         print(f"[ERROR] Failed to upload system logo: {e}")
         return jsonify({'error': str(e)}), 500
-
-
-
-

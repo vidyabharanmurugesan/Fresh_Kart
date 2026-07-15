@@ -46,7 +46,7 @@ def get_seller_orders(seller_id):
             buyer_id = order.get('buyer_id')
             if buyer_id:
                 try:
-                    user = User.query.get(int(buyer_id))
+                    user = User.get_by_id(buyer_id)
                     order['customer_name'] = user.name if user else f"Customer #{buyer_id}"
                 except Exception:
                     order['customer_name'] = f"Customer #{buyer_id}"
@@ -172,7 +172,7 @@ def get_delivery_orders(delivery_partner_id, status=None):
             buyer_id = order.get('buyer_id')
             if buyer_id:
                 try:
-                    user = User.query.get(int(buyer_id))
+                    user = User.get_by_id(buyer_id)
                     order['customer_name'] = user.name if user else f"Customer #{buyer_id}"
                 except Exception:
                     order['customer_name'] = f"Customer #{buyer_id}"
@@ -232,7 +232,7 @@ def get_seller_customers(seller_id):
         from app.models.user_model import User
         for buyer_id, stats in buyer_stats.items():
             try:
-                user = User.query.get(int(buyer_id))
+                user = User.get_by_id(buyer_id)
                 name = user.name if user else f"Customer #{buyer_id}"
                 phone = user.phone if user else "N/A"
                 email = user.email if user else "N/A"
@@ -264,7 +264,7 @@ def get_admin_orders():
         from app.models.user_model import User
         from app.models.product_model import ProductModel
         
-        users = {str(u.id): u for u in User.query.all()}
+        users = {str(u.get('id')): User.from_dict(u) for u in User.get_all()} # Wait, get_all isn't defined yet
         all_products = ProductModel.get_all_products()
         products_map = {p['product_id']: p for p in all_products}
         
@@ -324,7 +324,7 @@ def get_order_details(order_id):
         seller_id = str(order.get('seller_id'))
         
         try:
-            buyer = User.query.get(int(buyer_id))
+            buyer = User.get_by_id(buyer_id)
             order['buyer_name'] = buyer.name if buyer else f"Customer #{buyer_id}"
             order['buyer_phone'] = buyer.phone if buyer else "N/A"
             order['buyer_email'] = buyer.email if buyer else "N/A"
@@ -334,7 +334,7 @@ def get_order_details(order_id):
             order['buyer_email'] = "N/A"
             
         try:
-            seller = User.query.get(int(seller_id))
+            seller = User.get_by_id(seller_id)
             order['seller_name'] = seller.shop_name or seller.name if seller else f"Seller #{seller_id}"
             order['seller_email'] = seller.email if seller else "N/A"
             order['seller_phone'] = seller.phone if seller else "N/A"

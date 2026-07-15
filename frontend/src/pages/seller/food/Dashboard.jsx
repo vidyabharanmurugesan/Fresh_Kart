@@ -52,9 +52,18 @@ export default function SellerFoodDashboard({ domain = 'food' }) {
 
   return (
     <div className="dashboard-page" id="seller-food-dashboard">
-      <div className="page-header">
-        <h1>Welcome, {user?.shop_name || user?.name} </h1>
-        <p>Manage your food orders and inventory</p>
+      <div className="page-header" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+        {user?.shop_logo && (
+          <img 
+            src={user.shop_logo.startsWith('http') ? user.shop_logo : `${import.meta.env.VITE_API_BASE_URL || ''}${user.shop_logo.startsWith('/') ? '' : '/'}${user.shop_logo}`} 
+            alt="Shop Logo" 
+            style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '12px' }}
+          />
+        )}
+        <div>
+          <h1 style={{ margin: '0 0 5px 0' }}>Welcome, {user?.shop_name || user?.name} </h1>
+          <p style={{ margin: 0 }}>Manage your food orders and inventory</p>
+        </div>
       </div>
 
       <div className="stats-grid">

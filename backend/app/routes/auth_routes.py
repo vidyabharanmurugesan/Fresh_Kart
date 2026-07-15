@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required
 from app.controllers.auth_controller import (
     signup, login, get_current_user, logout, get_sellers, google_auth,
     send_otp, verify_otp, get_users_by_role, update_profile, download_license,
-    download_system_report_pdf, upload_system_logo
+    download_system_report_pdf, upload_system_logo, approve_user
 )
 from app.controllers.product_controller import upload_file
 
@@ -26,3 +26,4 @@ auth_bp.route('/sellers', methods=['GET'])(jwt_required()(get_sellers))
 auth_bp.route('/users', methods=['GET'])(jwt_required()(get_users_by_role))
 auth_bp.route('/system-report/pdf', methods=['GET'])(jwt_required()(download_system_report_pdf))
 auth_bp.route('/system-logo', methods=['POST'])(jwt_required()(upload_system_logo))
+auth_bp.route('/approve/<string:user_id>', methods=['PUT'])(jwt_required()(approve_user))
